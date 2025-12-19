@@ -1,0 +1,71 @@
+{
+    "BROKER_URL": "04dff8ffebe94e9d9bcee24fb6e655ed.s1.eu.hivemq.cloud",
+    "BROKER_PORT": 8883,
+    "AUTH_USERNAME": "admin",
+    "AUTH_PASSWORD": "Admintest1",
+    "TOPICS": [
+        {
+            "TYPE": "single",
+            "PREFIX": "prestatie",
+            "TIME_INTERVAL": 4,
+            "DATA": [
+                {
+                    "NAME": "hartslag",
+                    "TYPE": "int",
+                    "MIN_VALUE": 40,
+                    "MAX_VALUE": 220,
+                    "MAX_STEP": 5,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "systolische_bloeddruk",
+                    "TYPE": "int",
+                    "MIN_VALUE": 90,
+                    "MAX_VALUE": 250,
+                    "MAX_STEP": 5,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "lactaat_waardes",
+                    "TYPE": "int",
+                    "MIN_VALUE": 1,
+                    "MAX_VALUE": 20,
+                    "MAX_STEP": 0.5,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "zuurstof_opname",
+                    "TYPE": "int",
+                    "MIN_VALUE": 10,
+                    "MAX_VALUE": 90,
+                    "MAX_STEP": 1,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "hartminuutvolume",
+                    "TYPE": "int",
+                    "MIN_VALUE": 4,
+                    "MAX_VALUE": 45,
+                    "MAX_STEP": 1,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "maximale_belasting", 
+                    "TYPE": "int",
+                    "MIN_VALUE": 50,
+                    "MAX_VALUE": 450,
+                    "MAX_STEP": 10,
+                    "RETAIN_PROBABILITY": 0.2
+                },
+                {
+                    "NAME": "anaerobe_drempel",
+                    "TYPE": "int",
+                    "MIN_VALUE": 140,
+                    "MAX_VALUE": 180,
+                    "MAX_STEP": 5,
+                    "RETAIN_PROBABILITY": 0.2
+                }
+            ]
+        }
+    ]
+}

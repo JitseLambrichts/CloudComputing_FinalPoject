@@ -1,0 +1,17 @@
+services:
+  mqtt_receiver:
+    build:
+      context: ./MQTT_receiver
+    container_name: mqttreceiver
+    restart: "on-failure"
+    volumes:
+      - ./MQTT_receiver/plots:/app/plots
+
+  mqtt_sender:
+    build:
+      context: ./MQTT_sender
+    container_name: mqttsender
+    restart: unless-stopped
+    depends_on:
+      - mqtt_receiver
+    command: ["-f", "config/settings.json"]
