@@ -55,6 +55,7 @@ services:
     restart: "on-failure"
     volumes:
       - ./MQTT/MQTT_receiver/plots:/app/plots
+      - ./public/mqtt:/app/plots  # Voeg deze lijn toe!
     networks:
       - app-network
 

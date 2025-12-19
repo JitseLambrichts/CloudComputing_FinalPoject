@@ -11,6 +11,9 @@
     <br>
     <br>
     <a href="{{ route('matches') }}">Ga naar Matches </a>
+    <br>
+    <br>
+    <a href="{{ route('data') }}">Ga naar Data </a>
     
 </body>
 </html>

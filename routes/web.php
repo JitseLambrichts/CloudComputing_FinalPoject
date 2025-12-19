@@ -18,3 +18,5 @@ Route::get('/api/proxy/graphql-matches', function (Request $request) {
     $response = Http::get('http://graphql:5001/api/matches', $request->all());
     return $response->json();
 });
+
+Route::view('/data', 'data')->name('data');
