@@ -23,11 +23,18 @@ RUN pecl install grpc && docker-php-ext-enable grpc
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs
+
 # Set working directory
 WORKDIR /var/www
 
 # Copy existing application directory
 COPY . /var/www
+
+# Install npm dependencies and build assets
+RUN npm install && npm run build
 
 # Install dependencies
 RUN composer install --no-interaction --no-dev --prefer-dist
