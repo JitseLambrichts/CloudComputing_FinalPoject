@@ -1,0 +1,6 @@
+services:
+  finaletaakcloudcomputing:
+    image: finaletaakcloudcomputing
+    build:
+      context: .
+      dockerfile: ./Dockerfile

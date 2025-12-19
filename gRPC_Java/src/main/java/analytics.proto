@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package be.cloud;
+
+message LivePlayerUpdate {
+  string playerName = 1;
+  int32 currentHeartRate = 2;
+  float currentLactate = 3;
+  int64 timestamp = 4;
+}
+
+message AnalysisResponse {
+  string playerName = 1;
+  string recommendation = 2;
+  bool shouldSubstitute = 3;
+  int32 fatigueLevel = 4;   // Hoe moe een speler is op een schaal van 10
+}
+
+service AnalyticsService {
+  // Stream zorgt voor Bidirectional Streaming --> uitbreiding
+  rpc StreamPlayerAnalytics(stream LivePlayerUpdate) returns (stream AnalysisResponse); 
+}
