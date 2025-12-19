@@ -10,9 +10,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/test-grpc', [GrpcController::class, 'grpc']);
+Route::get('/grpc', [GrpcController::class, 'grpc'])->name('grpc');
 
-Route::view('/matches', 'teams');
+Route::view('/matches', 'teams')->name('matches');
 // Dit is nodig omdat de browser denkt dat dit een tracker is als de GraphQL wordt opgeroepen, en de trackers worden geblokkeerd -> bronvermelding Copilot
 Route::get('/api/proxy/graphql-matches', function (Request $request) {
     $response = Http::get('http://graphql:5001/api/matches', $request->all());
