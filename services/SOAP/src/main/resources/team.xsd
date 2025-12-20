@@ -1,0 +1,30 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://be/cloud/team_statistics" elementFormDefault="qualified">
+
+    <xs:element name="getTeamStatsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="teamName" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getTeamStatsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="common_name" type="xs:string"/>
+                <xs:element name="matches_played" type="xs:int"/>
+                <xs:element name="wins" type="xs:int"/>
+                <xs:element name="wins_home" type="xs:int"/>
+                <xs:element name="wins_away" type="xs:int"/>
+                <xs:element name="losses" type="xs:int"/>
+                <xs:element name="losses_away" type="xs:int"/>
+                <xs:element name="draws" type="xs:int"/>
+                <xs:element name="points_per_game" type="xs:int"/>
+                <xs:element name="league_position" type="xs:int"/>
+                <xs:element name="goals_scored" type="xs:int"/>
+                <xs:element name="goals_conceded" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+
