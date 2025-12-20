@@ -51,31 +51,31 @@ def on_subscribe(client, userdata, message_id, granted_qos, properties=None):
 def on_message(client, userdata, msg):
     global live_plotter
 
-    print(msg.topic + " " + str(msg.qos))
+    # print(msg.topic + " " + str(msg.qos))
     data = json.loads(msg.payload)
 
-    print("\nPrestatie:")
-    print("-" * 40)
+    # print("\nPrestatie:")
+    # print("-" * 40)
 
-    units = {
-        "hartslag": "bpm",
-        "systolische_bloeddruk": "mmHg",
-        "lactaat_waardes": "mmol/L",
-        "zuurstof_opname": "mL/kg/min",
-        "hartminuutvolume": "L/min",
-        "maximale_belasting": "W",
-        "anaerobe_drempel": "bpm"
-    }
+    # units = {
+    #     "hartslag": "bpm",
+    #     "systolische_bloeddruk": "mmHg",
+    #     "lactaat_waardes": "mmol/L",
+    #     "zuurstof_opname": "mL/kg/min",
+    #     "hartminuutvolume": "L/min",
+    #     "maximale_belasting": "W",
+    #     "anaerobe_drempel": "bpm"
+    # }
 
-    # Zorgen voor mooiere print in de terminal
-    for key, value in data.items():
-        unit = units.get(key, "")
-        clean_key = key.replace("_", " ").title()
-        if unit:
-            print(f" - {clean_key}: {value} {unit}")
-        else:
-            print(f" - {clean_key}: {value}")
-    print("-" * 40 + "\n")
+    # # Zorgen voor mooiere print in de terminal
+    # for key, value in data.items():
+    #     unit = units.get(key, "")
+    #     clean_key = key.replace("_", " ").title()
+    #     if unit:
+    #         print(f" - {clean_key}: {value} {unit}")
+    #     else:
+    #         print(f" - {clean_key}: {value}")
+    # print("-" * 40 + "\n")
 
     # Nodig voor de grafiek
     if live_plotter:

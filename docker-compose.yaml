@@ -32,7 +32,7 @@ services:
   # De nieuwe gRPC Java service
   grpc-server:
     build:
-      context: ./gRPC_Java
+      context: ./services/gRPC_Java
       dockerfile: Dockerfile
     ports:
       - "50051:50051"
@@ -41,7 +41,7 @@ services:
 
   graphql:
     build:
-      context: ./GraphQL
+      context: ./services/GraphQL
       dockerfile: Dockerfile
     ports:
       - "5001:5001"
@@ -50,7 +50,7 @@ services:
 
   mqtt_receiver:
     build:
-      context: ./MQTT/MQTT_receiver
+      context: ./services/MQTT/MQTT_receiver
     container_name: mqttreceiver
     restart: "on-failure"
     volumes:
@@ -61,7 +61,7 @@ services:
 
   mqtt_sender:
     build:
-      context: ./MQTT/MQTT_sender
+      context: ./services/MQTT/MQTT_sender
     container_name: mqttsender
     restart: unless-stopped
     depends_on:
