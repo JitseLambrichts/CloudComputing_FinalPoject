@@ -210,6 +210,7 @@
                 const data = await response.json();
 
                 // Toon team statistieken
+                // Voor dropdown-menu hulp van Copilot (bronvermelding)
                 if (data.team) {
                     const teamInfoHtml = `
                         <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -229,7 +230,7 @@
                                 ${data.team.spelers && data.team.spelers.length > 0 
                                     ? data.team.spelers.map(player => `
                                         <div class="player-item">
-                                            • ${player.naam} - Leeftijd: ${player.leeftijd} - Positie: ${player.positie} - Minuten gespeeld: ${player.minutenGespeeld}
+                                            • <a href="{{ route('data') }}">${player.naam}</a> - Leeftijd: ${player.leeftijd} - Positie: ${player.positie} - Minuten gespeeld: ${player.minutenGespeeld}
                                         </div>`).join('')
                                     : '<div class="player-item">Geen spelers beschikbaar</div>'
                                 }
