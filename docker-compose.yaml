@@ -48,14 +48,13 @@ services:
     networks:
       - app-network
 
-  mqtt_receiver:
+  mqtt_receiver_web:
     build:
-      context: ./services/MQTT/MQTT_receiver
-    container_name: mqttreceiver
-    restart: "on-failure"
-    volumes:
-      - ./MQTT/MQTT_receiver/plots:/app/plots
-      - ./public/mqtt:/app/plots  # Voeg deze lijn toe!
+      context: ./services/MQTT/MQTT_receiver_web
+    container_name: mqtt_receiver_web
+    restart: unless-stopped
+    ports:
+      - "9292:9292"  # Expose de WebSocket poort naar de host
     networks:
       - app-network
 
@@ -65,7 +64,7 @@ services:
     container_name: mqttsender
     restart: unless-stopped
     depends_on:
-      - mqtt_receiver
+      - mqtt_receiver_web
     command: ["-f", "config/settings.json"]
     networks:
       - app-network

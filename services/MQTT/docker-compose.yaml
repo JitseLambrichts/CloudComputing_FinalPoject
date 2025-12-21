@@ -1,11 +1,11 @@
 services:
-  mqtt_receiver:
+  mqtt_receiver_web:
     build:
-      context: ./MQTT_receiver
+      context: ./MQTT_receiver_web
     container_name: mqttreceiver
     restart: "on-failure"
-    volumes:
-      - ./MQTT_receiver/plots:/app/plots
+    # volumes:
+    #   - ./MQTT_receiver/plots:/app/plots
 
   mqtt_sender:
     build:
