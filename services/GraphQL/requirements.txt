@@ -9,3 +9,4 @@ flask-cors==6.0.1
 flask-graphql==2.0.1
 pandas
 requests
+mysql-connector-python

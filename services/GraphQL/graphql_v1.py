@@ -2,38 +2,22 @@ from graphene import *
 from flask import Flask, render_template, request
 from flask_graphql import GraphQLView
 from graphql import graphql
-import pandas as pd
 import requests as req
 import json
 from flask_cors import CORS
+import mysql.connector
+import os
 
-dfLeague = pd.read_csv("league_stats.csv", sep=",", encoding="latin-1")
-dfMatches = pd.read_csv("matches.csv", sep=",", encoding="latin-1")
-dfPlayers = pd.read_csv("players.csv", sep=",", encoding="latin-1")
-dfTeams = pd.read_csv("teams.csv", sep=",", encoding="latin-1")
+DB_CONFIG = {
+    'host': 'host.docker.internal',
+    'user': 'root',
+    'password': '',
+    'database': 'finaletaakcloudcomputing',
+    'port': 3306
+}
 
-dfLeague['id'] = dfLeague.index
-dfMatches['id'] = dfMatches.index
-dfPlayers['id'] = dfPlayers.index
-dfTeams['id'] = dfTeams.index
-
-class League(ObjectType):
-    """Een voetbalcompetitie met statistieken over een seizoen"""
-    naam = Field(String, required=True, description="Naam van de competitie")
-    seizoen = Field(String, required=True, description="Seizoen (bijv. 2023/2024)")
-    aantal_matches = Field(Int, description="Totaal aantal gespeelde wedstrijden")
-    gem_doelpunten = Field(Int, description="Gemiddeld aantal doelpunten per wedstrijd")
-    matches = Field(List(lambda: Match), 
-                    limit = Argument(Int, description="Maximaal aantal wedstrijden om weer te geven"),
-                    offset = Argument(Int, default_value=0, description="Aantal matches over te slaan"),
-                    description="Alle wedstrijden in deze competitie")
-
-    # Alle matchen voor de league
-    def resolve_matches(parent, info, limit=None, offset=0):
-        all_matches = [maakMatch(row) for index, row in dfMatches.iterrows()]
-        if limit:
-            return all_matches[offset: offset + limit]
-        return all_matches[offset:]
+def get_db_connection():
+    return mysql.connector.connect(**DB_CONFIG)
 
 class Match(ObjectType):
     """Een voetbalwedstrijd tussen twee teams"""
@@ -57,6 +41,7 @@ class Score(ObjectType):
 
 class Team(ObjectType):
     """Een voetbalteam met statistieken"""
+    id = Field(Int, required=True, description="TeamID voor de database")
     naam = Field(String, required=True, description="Teamnaam")
     wedstrijden_gespeeld = Field(Int, description="Aantal gespeelde wedstrijden")
     wedstrijden_gewonnen = Field(Int, description="Aantal gewonnen wedstrijden")
@@ -74,8 +59,28 @@ class Team(ObjectType):
 
     # De speler van de teams aanmaken
     def resolve_spelers(parent, info):
-        team_spelers = dfPlayers[dfPlayers['Current Club'] == parent.naam]
-        return [maakPlayer(speler_id) for speler_id in team_spelers['id']]
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM players WHERE team_id = %s"
+        cursor.execute(query, (parent.id,))
+        player_rows = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return [maakPlayer(row) for row in player_rows]
+
+    
+    # De matches van een team aanmaken
+    def resolve_matches(parent, info, limit=None): 
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM matches WHERE home_team_id = %s OR away_team_id = %s"
+        cursor.execute(query, (parent.id, parent.id))
+        matches_rows = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return [maakMatch(row) for row in matches_rows if row]
 
 class Player(ObjectType):
     """Een voetbalspeler met carrièrestatistieken"""
@@ -108,20 +113,27 @@ def formatTijdstippen(string):
                 tijdstippen.append(tijd)
     return tijdstippen
 
-def maakLeague(row):
-    return League(
-        naam = row['name'],
-        seizoen = row['season'],
-        aantal_matches = row['total_matches'],
-        gem_doelpunten = row['average_goals_per_match']
-        # Geen matches "aanmaken" want GraphQL gaat automatisch de resolve_matches oproepen
-    )
+def get_team_by_id(team_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    query = "SELECT * FROM teams WHERE id = %s"
+
+    cursor.execute(query, (team_id,))
+    team_row = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    if team_id : return maakTeam(team_row)
+
+    return None
 
 def maakMatch(row):
+    if not row : return None
     return Match(
-        datum = row['date_GMT'],
-        thuisploeg = maakTeam(dfTeams[dfTeams['common_name']==row['home_team_name']].iloc[0]),
-        uitploeg = maakTeam(dfTeams[dfTeams['common_name']==row['away_team_name']].iloc[0]),
+        datum = row['date_gmt'],
+        thuisploeg = get_team_by_id(row['home_team_id']),
+        uitploeg = get_team_by_id(row['away_team_id']),
         scheidsrechter = row['referee'],
         score = maakScore(row),
         winnaar = maakWinnaar(row),
@@ -133,23 +145,25 @@ def maakScore(row):
     return Score(
             thuisploeg_doelpunten = row['home_team_goal_count'],
             uitploeg_doelpunten = row['away_team_goal_count'],
-            thuisploeg_tijdstippen_doelpunten = formatTijdstippen(row['home_team_goal_timings']),
-            uitploeg_tijdstippen_doelpunten =formatTijdstippen(row['away_team_goal_timings']),
-            thuisploeg_verwachte_doelpunten = row['team_a_xg'],
-            uitploeg_verwachte_doelpunten = row['team_b_xg'],
+            # thuisploeg_tijdstippen_doelpunten = formatTijdstippen(row['home_team_goal_timings']),
+            # uitploeg_tijdstippen_doelpunten =formatTijdstippen(row['away_team_goal_timings']),
+            # thuisploeg_verwachte_doelpunten = row['team_a_xg'],
+            # uitploeg_verwachte_doelpunten = row['team_b_xg'],
     )
 
 def maakWinnaar(row):
     if row['home_team_goal_count'] > row['away_team_goal_count']:
-        return maakTeam(dfTeams[dfTeams['common_name']==row['home_team_name']].iloc[0])
+        return get_team_by_id(row['home_team_id'])
     elif row['away_team_goal_count'] > row['home_team_goal_count']:
-        return maakTeam(dfTeams[dfTeams['common_name']==row['away_team_name']].iloc[0]) 
+        return get_team_by_id(row['away_team_id'])
     else:
         return None
 
 
 def maakTeam(row):
+    if not row : return None
     return Team(
+            id=row['id'],
             naam = row['common_name'],
             wedstrijden_gespeeld = row['matches_played'],
             wedstrijden_gewonnen = row['wins'],
@@ -165,62 +179,95 @@ def maakTeam(row):
             doelpunten_tegen = row['goals_conceded']
     )
 
-def maakPlayer(id):
-    speler = dfPlayers.iloc[id]
-
+def maakPlayer(row):
+    if not row:
+        return None
     return Player(
-                naam = speler['full_name'],
-                leeftijd = speler['age'],
-                geboorte_datum = speler['birthday_GMT'],
-                positie = speler['position'],
-                club = maakTeam(dfTeams[dfTeams['common_name']==speler['Current Club']].iloc[0]),
-                minuten_gespeeld = speler['minutes_played_overall'],
-                nationaliteit = speler['nationality'],
-                aantal_doelpunten = speler['goals_overall'],
-                aantal_assisten = speler['assists_overall'],
-                aantal_gele_kaarten = speler['yellow_cards_overall'],
-                aantal_rode_kaarten = speler['red_cards_overall']
+                naam = row['full_name'],
+                leeftijd = row['age'],
+                geboorte_datum = row['birthday_GMT'],
+                positie = row['position'],
+                club = get_team_by_id(row['team_id']),
+                minuten_gespeeld = row['minutes_played_overall'],
+                nationaliteit = row['nationality'],
+                aantal_doelpunten = row['goals_overall'],
+                aantal_assisten = row['assists_overall'],
+                aantal_gele_kaarten = row['yellow_cards_overall'],
+                aantal_rode_kaarten = row['red_cards_overall']
     )
 
 
 class Query(ObjectType):
     """Root query voor alle beschikbare zoekopdrachten"""
     speler = Field(Player, name=Argument(String, description="Volledige naam van de speler"), description="Zoek een speler op naam")
-    league = Field(League, id=Argument(Int, default_value=0, description="ID van de competitie"), description="Haal competitiegegevens op")
     team = Field(Team, name=Argument(String, required=True, description="Naam van het team"), description="Statistieken van een specifiek team ophalen")
-    matches = List(Match, limit=Argument(Int, description="Maximaal aantal resultaten"), offset=Argument(Int, default_value=0, description="Aantal over te slaan"), description="Alle wedstrijden ophalen")
     team_matches = List(Match, team_name=Argument(String, required=True, description="Naam van het team"), limit=Argument(Int, description="Maximaal aantal resultaten"), offset=Argument(Int, default_value=0, description="Aantal over te slaan"), description="Alle wedstrijden van een specifiek team")
 
     def resolve_speler(parent, info, name):
-        player_row = dfPlayers[dfPlayers["full_name"] == name]
-        if not player_row.empty:
-            return maakPlayer(player_row.iloc[0]['id'])
-        return None
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM players WHERE full_name = %s"
+
+        cursor.execute(query, (name,))
+        player_row = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return maakPlayer(player_row)
     
     def resolve_spelers(parent, info):
-        return [maakPlayer(speler_id) for speler_id in dfPlayers['id']]
-    
-    def resolve_league(parent, info, id):
-        return maakLeague(dfLeague[dfLeague['id']==id].iloc[0])
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM players WHERE 'Current club' = %s"
+
+        cursor.execute(query, (parent.naam,))
+        player_rows = cursor.fetchall()
+
+        return [Player(
+            naam=r['full_name'],
+            leeftijd=r['age'],
+            positie=r['position'],
+        ) for r in player_rows]
     
     def resolve_team(parent, info, name):
-        team_row = dfTeams[dfTeams['common_name'] == name]
-        if not team_row.empty:
-            return maakTeam(team_row.iloc[0])
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM teams WHERE common_name = %s"
+        cursor.execute(query, (name,))
+
+        team_row = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        if team_row:
+            return maakTeam(team_row)
         return None
     
-    def resolve_matches(parent, info, limit=None, offset=0):
-        rows = dfMatches.iloc[offset: (offset + limit) if limit else None]  # Hier wordt een offset gebruik om een aantal matches te kunnen opvragen vanaf een aantal (bv. de laatste 5 matches van een seizoen opvragen)
-        return [maakMatch(row) for index, row in rows.iterrows()]
     
-    def resolve_team_matches(parent, info, team_name, limit=0, offset=0):
-        team_matches = dfMatches[
-            (dfMatches['home_team_name'] == team_name) |
-            (dfMatches['away_team_name'] == team_name)
-        ]
-
-        rows = team_matches.iloc[offset: (offset + limit) if limit else None]
-        return [maakMatch(row) for index, row in rows.iterrows()]
+    def resolve_team_matches(parent, info, team_name, limit=None, offset=0):
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+        
+        # Eerst team_id ophalen
+        cursor.execute("SELECT id FROM teams WHERE common_name = %s", (team_name,))
+        team = cursor.fetchone()
+        
+        if not team:
+            cursor.close()
+            connection.close()
+            return []
+        
+        team_id = team['id']
+        query = "SELECT * FROM matches WHERE home_team_id = %s OR away_team_id = %s LIMIT %s OFFSET %s"
+        cursor.execute(query, (team_id, team_id, limit or 100, offset))
+        matches_rows = cursor.fetchall()
+        
+        cursor.close()
+        connection.close()
+        return [maakMatch(row) for row in matches_rows if row]
 
 
 schema = Schema(query=Query)
@@ -290,38 +337,7 @@ def api_matches():
             "matches": result.data.get("teamMatches", [])    # De [] zorgt ervoor dat bij afwezige teamMatches de API een lege lijst teruggeeft 
         })
     else:
-        # Anders de eerste 5 matchen laten zien
-        query_string = """
-        {
-          matches(limit: 5) {
-            datum
-            thuisploeg {
-              naam
-              wedstrijdenGespeeld
-              wedstrijdenGewonnen
-              eindplaats
-              doelpuntenGemaakt
-              doelpuntenTegen
-            }
-            uitploeg {
-              naam
-              wedstrijdenGespeeld
-              wedstrijdenGewonnen
-              eindplaats
-              doelpuntenGemaakt
-              doelpuntenTegen
-            }
-            score {
-              thuisploegDoelpunten
-              uitploegDoelpunten
-            }
-          }
-        }
-        """
-        result = graphql(schema, query_string)
-        if result.errors:
-            return json.dumps({"errors": [str(e) for e in result.errors]})
-        return json.dumps({"matches": result.data.get("matches", [])}, default=str)
+        return json.dumps({"error": "No team specified. Please provide a team name using ?team=TeamName"})
 
 myWebApp.add_url_rule('/graphiql',
                         view_func=GraphQLView.as_view('graphql',
