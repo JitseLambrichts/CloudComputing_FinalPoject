@@ -1,0 +1,7 @@
+{
+  "brokerAddress": "04dff8ffebe94e9d9bcee24fb6e655ed.s1.eu.hivemq.cloud",
+  "brokerPort": 8883,
+  "username": "admin",
+  "password": "Admintest1",
+  "baseTopic": "prestatie"
+}
