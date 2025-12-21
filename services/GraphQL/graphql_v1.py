@@ -7,6 +7,7 @@ import json
 from flask_cors import CORS
 import mysql.connector
 import os
+from zeep import Client
 
 DB_CONFIG = {
     'host': 'host.docker.internal',
@@ -16,8 +17,15 @@ DB_CONFIG = {
     'port': 3306
 }
 
+SOAP_WSDL_URL = "http://soap-service:8080/ws/football.wsdl"
+
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
+
+def get_team_stats_via_soap(team_name):
+    client = Client(SOAP_WSDL_URL)
+    response = client.service.getTeamStats(teamName=team_name)
+    return response
 
 class Match(ObjectType):
     """Een voetbalwedstrijd tussen twee teams"""
@@ -231,19 +239,25 @@ class Query(ObjectType):
         ) for r in player_rows]
     
     def resolve_team(parent, info, name):
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
+        soap_response = get_team_stats_via_soap(name)
 
-        query = "SELECT * FROM teams WHERE common_name = %s"
-        cursor.execute(query, (name,))
-
-        team_row = cursor.fetchone()
-
-        cursor.close()
-        connection.close()
-
-        if team_row:
-            return maakTeam(team_row)
+        if soap_response:
+            return Team(
+                id=soap_response.id,
+                naam=soap_response.common_name,
+                wedstrijden_gespeeld=soap_response.matches_played,
+                wedstrijden_gewonnen=soap_response.wins,
+                wedstrijden_gewonnen_thuis=soap_response.wins_home,
+                wedstrijden_gewonnen_uit=soap_response.wins_away,
+                wedstrijden_verloren=soap_response.losses,
+                wedstrijden_verloren_thuis=soap_response.losses_home,
+                wedstrijden_verloren_uit=soap_response.losses_away,
+                wedstrijden_gelijkspel=soap_response.draws,
+                gem_punten_per_match=soap_response.points_per_game,
+                eindplaats=soap_response.league_position,
+                doelpunten_gemaakt=soap_response.goals_scored,
+                doelpunten_tegen=soap_response.goals_conceded,
+            )
         return None
     
     

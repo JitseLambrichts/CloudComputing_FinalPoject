@@ -13,7 +13,7 @@ import java.sql.*;
 @Endpoint
 public class FootballEndpoint {
     // Dit MOET exact hetzelfde zijn als in je .xsd 
-    private static final String NAMESPACE_URI = "http://team_statistics";
+    private static final String NAMESPACE_URI = "http://be/cloud/team_statistics";
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getTeamStatsRequest")
     @ResponsePayload
@@ -33,14 +33,14 @@ public class FootballEndpoint {
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                // Map elk veld uit de database-migratie naar de SOAP-response 
+                response.setId(result.getInt("id"));
                 response.setCommonName(result.getString("common_name"));
                 response.setMatchesPlayed(result.getInt("matches_played"));
                 response.setWins(result.getInt("wins"));
                 response.setWinsHome(result.getInt("wins_home"));
                 response.setWinsAway(result.getInt("wins_away"));
                 response.setLosses(result.getInt("losses"));
-                // Let op: losses_home staat niet in je .xsd, dus die slaan we over
+                response.setLossesHome(result.getInt("losses_home"));
                 response.setLossesAway(result.getInt("losses_away"));
                 response.setDraws(result.getInt("draws"));
                 response.setPointsPerGame(result.getInt("points_per_game"));

@@ -75,7 +75,7 @@ services:
       context: ./services/SOAP  # Pas dit pad aan naar je SOAP service
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"
+      - "8001:8080"
     networks:
       - app-network
     # Voeg dit toe als je service afhankelijk is van de database

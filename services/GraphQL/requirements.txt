@@ -10,3 +10,4 @@ flask-graphql==2.0.1
 pandas
 requests
 mysql-connector-python
+zeep
