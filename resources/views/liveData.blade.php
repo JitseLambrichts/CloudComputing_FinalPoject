@@ -20,7 +20,7 @@
     // TOEVOEGEN: Stuur spelernaam naar server bij verbinding
     ws.onopen = function () {
       console.log('WebSocket connection established');
-      ws.send(JSON.stringify({ type: 'setPlayer', playerName: playerName }));
+      // ws.send(JSON.stringify({ type: 'setPlayer', playerName: playerName }));
     };
 
     ws.onmessage = function (event) {
@@ -33,7 +33,6 @@
         
         if (data.analysis) {
           html += '<h3>Analyse (via gRPC)</h3>';
-          html += `<p><strong>Speler:</strong> ${data.analysis.playerName}</p>`;
           html += `<p><strong>Aanbeveling:</strong> ${data.analysis.recommendation}</p>`;
           html += `<p><strong>Vermoeidheid:</strong> ${data.analysis.fatigueLevel}/10</p>`;
           html += `<p><strong>Wisselen:</strong> ${data.analysis.shouldSubstitute ? 'JA ⚠️' : 'Nee ✅'}</p>`;

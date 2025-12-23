@@ -3,17 +3,15 @@ syntax = "proto3";
 option go_package = "./analytics";
 
 message LivePlayerUpdate {
-    string playerName = 1;
-    int32 currentHeartRate = 2;
-    float currentLactate = 3;
-    int64 timestamp = 4;
+    int32 currentHeartRate = 1;
+    float currentLactate = 2;
+    int64 timestamp = 3;
 }
 
 message AnalysisResponse {
-    string playerName = 1;
-    string recommendation = 2;
-    bool shouldSubstitute = 3;
-    int32 fatigueLevel = 4;   // Hoe moe een speler is op een schaal van 10
+    string recommendation = 1;
+    bool shouldSubstitute = 2;
+    int32 fatigueLevel = 3;   // Hoe moe een speler is op een schaal van 10
 }
 
 service AnalyticsService {

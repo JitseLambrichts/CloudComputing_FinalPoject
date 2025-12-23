@@ -67,7 +67,6 @@ wss.on('connection', function connection(ws) {
             console.log('Received message on topic: ', mqttTopic);
 
             const grpcRequest = {
-                playerName: currentPlayerName,
                 currentHeartRate: data.hartslag,
                 currentLactate: data.lactaat_waardes,
                 timestamp: Date.now()
@@ -82,7 +81,6 @@ wss.on('connection', function connection(ws) {
                     const enrichedData = {
                         ...data,
                         analysis: {
-                            playerName: response.playerName,
                             recommendation: response.recommendation,
                             shouldSubstitute: response.shouldSubstitute,
                             fatigueLevel: response.fatigueLevel

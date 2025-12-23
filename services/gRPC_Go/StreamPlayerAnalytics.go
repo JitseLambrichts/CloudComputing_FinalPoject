@@ -27,7 +27,6 @@ func (s *server) StreamPlayerAnalytics(stream pb.AnalyticsService_StreamPlayerAn
 		}
 
 		resp := &pb.AnalysisResponse{
-			PlayerName: req.PlayerName,
 			Recommendation: recommendation,
 			ShouldSubstitute: shouldSub,
 			FatigueLevel: int32(fatigue),
@@ -52,7 +51,6 @@ func (s *server) AnalyzePlayer(ctx context.Context, request *pb.LivePlayerUpdate
 	}
 
 	return &pb.AnalysisResponse{
-		PlayerName: request.PlayerName,
 		Recommendation: recommendation,
 		ShouldSubstitute: shouldSub,
 		FatigueLevel: int32(fatigue),

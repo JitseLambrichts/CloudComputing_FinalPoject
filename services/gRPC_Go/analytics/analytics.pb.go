@@ -23,10 +23,9 @@ const (
 
 type LivePlayerUpdate struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
-	PlayerName       string                 `protobuf:"bytes,1,opt,name=playerName,proto3" json:"playerName,omitempty"`
-	CurrentHeartRate int32                  `protobuf:"varint,2,opt,name=currentHeartRate,proto3" json:"currentHeartRate,omitempty"`
-	CurrentLactate   float32                `protobuf:"fixed32,3,opt,name=currentLactate,proto3" json:"currentLactate,omitempty"`
-	Timestamp        int64                  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	CurrentHeartRate int32                  `protobuf:"varint,1,opt,name=currentHeartRate,proto3" json:"currentHeartRate,omitempty"`
+	CurrentLactate   float32                `protobuf:"fixed32,2,opt,name=currentLactate,proto3" json:"currentLactate,omitempty"`
+	Timestamp        int64                  `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -61,13 +60,6 @@ func (*LivePlayerUpdate) Descriptor() ([]byte, []int) {
 	return file_analytics_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *LivePlayerUpdate) GetPlayerName() string {
-	if x != nil {
-		return x.PlayerName
-	}
-	return ""
-}
-
 func (x *LivePlayerUpdate) GetCurrentHeartRate() int32 {
 	if x != nil {
 		return x.CurrentHeartRate
@@ -91,10 +83,9 @@ func (x *LivePlayerUpdate) GetTimestamp() int64 {
 
 type AnalysisResponse struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
-	PlayerName       string                 `protobuf:"bytes,1,opt,name=playerName,proto3" json:"playerName,omitempty"`
-	Recommendation   string                 `protobuf:"bytes,2,opt,name=recommendation,proto3" json:"recommendation,omitempty"`
-	ShouldSubstitute bool                   `protobuf:"varint,3,opt,name=shouldSubstitute,proto3" json:"shouldSubstitute,omitempty"`
-	FatigueLevel     int32                  `protobuf:"varint,4,opt,name=fatigueLevel,proto3" json:"fatigueLevel,omitempty"` // Hoe moe een speler is op een schaal van 10
+	Recommendation   string                 `protobuf:"bytes,1,opt,name=recommendation,proto3" json:"recommendation,omitempty"`
+	ShouldSubstitute bool                   `protobuf:"varint,2,opt,name=shouldSubstitute,proto3" json:"shouldSubstitute,omitempty"`
+	FatigueLevel     int32                  `protobuf:"varint,3,opt,name=fatigueLevel,proto3" json:"fatigueLevel,omitempty"` // Hoe moe een speler is op een schaal van 10
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -129,13 +120,6 @@ func (*AnalysisResponse) Descriptor() ([]byte, []int) {
 	return file_analytics_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *AnalysisResponse) GetPlayerName() string {
-	if x != nil {
-		return x.PlayerName
-	}
-	return ""
-}
-
 func (x *AnalysisResponse) GetRecommendation() string {
 	if x != nil {
 		return x.Recommendation
@@ -161,21 +145,15 @@ var File_analytics_proto protoreflect.FileDescriptor
 
 const file_analytics_proto_rawDesc = "" +
 	"\n" +
-	"\x0fanalytics.proto\"\xa4\x01\n" +
-	"\x10LivePlayerUpdate\x12\x1e\n" +
-	"\n" +
-	"playerName\x18\x01 \x01(\tR\n" +
-	"playerName\x12*\n" +
-	"\x10currentHeartRate\x18\x02 \x01(\x05R\x10currentHeartRate\x12&\n" +
-	"\x0ecurrentLactate\x18\x03 \x01(\x02R\x0ecurrentLactate\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\x03R\ttimestamp\"\xaa\x01\n" +
-	"\x10AnalysisResponse\x12\x1e\n" +
-	"\n" +
-	"playerName\x18\x01 \x01(\tR\n" +
-	"playerName\x12&\n" +
-	"\x0erecommendation\x18\x02 \x01(\tR\x0erecommendation\x12*\n" +
-	"\x10shouldSubstitute\x18\x03 \x01(\bR\x10shouldSubstitute\x12\"\n" +
-	"\ffatigueLevel\x18\x04 \x01(\x05R\ffatigueLevel2\x8c\x01\n" +
+	"\x0fanalytics.proto\"\x84\x01\n" +
+	"\x10LivePlayerUpdate\x12*\n" +
+	"\x10currentHeartRate\x18\x01 \x01(\x05R\x10currentHeartRate\x12&\n" +
+	"\x0ecurrentLactate\x18\x02 \x01(\x02R\x0ecurrentLactate\x12\x1c\n" +
+	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"\x8a\x01\n" +
+	"\x10AnalysisResponse\x12&\n" +
+	"\x0erecommendation\x18\x01 \x01(\tR\x0erecommendation\x12*\n" +
+	"\x10shouldSubstitute\x18\x02 \x01(\bR\x10shouldSubstitute\x12\"\n" +
+	"\ffatigueLevel\x18\x03 \x01(\x05R\ffatigueLevel2\x8c\x01\n" +
 	"\x10AnalyticsService\x12A\n" +
 	"\x15StreamPlayerAnalytics\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponse(\x010\x01\x125\n" +
 	"\rAnalyzePlayer\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponseB\rZ\v./analyticsb\x06proto3"
