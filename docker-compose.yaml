@@ -32,7 +32,7 @@ services:
   # De nieuwe gRPC Java service
   grpc-server:
     build:
-      context: ./services/gRPC_Java
+      context: ./services/gRPC_Go
       dockerfile: Dockerfile
     ports:
       - "50051:50051"
@@ -55,6 +55,8 @@ services:
     restart: unless-stopped
     ports:
       - "9292:9292"  # Expose de WebSocket poort naar de host
+    depends_on:
+      - grpc-server  # TOEVOEGEN: wacht op gRPC server
     networks:
       - app-network
 

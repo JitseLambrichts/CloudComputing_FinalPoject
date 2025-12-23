@@ -46,7 +46,7 @@ func (s *server) AnalyzePlayer(ctx context.Context, request *pb.LivePlayerUpdate
 	recommendation := "Speler hoeft niet te wisselen"
 	shouldSub := false
 
-	if fatigue > 8 {
+	if fatigue >= 8 {
 		recommendation = "Speler moet gewisseld worden"
 		shouldSub = true;
 	}
@@ -60,5 +60,10 @@ func (s *server) AnalyzePlayer(ctx context.Context, request *pb.LivePlayerUpdate
 }
 
 func calucalteFatigueLevel(heartRate int32, lactate float32) int32 {
-	return int32(max(int(10), int(heartRate/25) + int(lactate/3)));
+    // Bereken fatigue: hartslag/25 + lactaat/3, met maximum van 10
+    fatigue := int(heartRate/25) + int(lactate/3)
+    if fatigue > 10 {
+        return 10
+    }
+    return int32(fatigue)
 }

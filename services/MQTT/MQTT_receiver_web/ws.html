@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,20 +10,24 @@
   <div id="liveValue"></div>
 
   <script>
-    const ws = new WebSocket('ws://localhost:9292'); // WebSocket server address
-
-    ws.onopen = function () {
-      console.log('WebSocket connection established');
-    };
-
+    const ws = new WebSocket('ws://localhost:9292');
+  
     ws.onmessage = function (event) {
-      const liveValue = event.data;
-      document.getElementById('liveValue').textContent = liveValue;
-    };
-
-    ws.onclose = function () {
-      console.log('WebSocket connection closed');
+      const data = JSON.parse(event.data);
+      
+      let html = '<h2>Prestatie Data</h2>';
+      html += `<p>Hartslag: ${data.hartslag} bpm</p>`;
+      html += `<p>Lactaat: ${data.lactaat_waardes} mmol/L</p>`;
+      
+      if (data.analysis) {
+        html += '<h2>Analyse</h2>';
+        html += `<p>Aanbeveling: ${data.analysis.recommendation}</p>`;
+        html += `<p>Vermoeidheid: ${data.analysis.fatigueLevel}/10</p>`;
+        html += `<p>Wisselen: ${data.analysis.shouldSubstitute ? 'JA' : 'Nee'}</p>`;
+      }
+      
+      document.getElementById('liveValue').innerHTML = html;
     };
   </script>
 </body>
-</html>
+</html> -->
