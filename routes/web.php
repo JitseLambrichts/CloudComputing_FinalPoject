@@ -22,3 +22,7 @@ Route::get('/api/proxy/graphql-matches', function (Request $request) {
 Route::view('/data', 'data')->name('data');
 
 Route::view('/live-data', 'liveData')->name('live-data');
+Route::get('/api/proxy/graphql-player', function (Request $request) {
+    $response = Http::get('http://graphql:5001/api/player', $request->all());
+    return $response->json();
+});

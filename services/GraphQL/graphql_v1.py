@@ -289,9 +289,9 @@ schema = Schema(query=Query)
 myWebApp = Flask("My App")
 CORS(myWebApp)
 
-@myWebApp.route("/")
-def hello_world():
-    return render_template("index.html")
+# @myWebApp.route("/")
+# def hello_world():
+#     return render_template("index.html")
 
 @myWebApp.route("/api/matches")
 def api_matches():
@@ -352,6 +352,34 @@ def api_matches():
         })
     else:
         return json.dumps({"error": "No team specified. Please provide a team name using ?team=TeamName"})
+
+@myWebApp.route("/api/player")
+def api_player():
+    player = request.args.get('player', None)
+
+    if player:
+        query_string = f"""
+        {{
+            speler(name: "{player}") {{
+                naam
+                leeftijd
+                positie
+                minutenGespeeld
+                nationaliteit
+                aantalDoelpunten
+                aantalAssisten
+                aantalGeleKaarten
+                aantalRodeKaarten
+            }}
+        }}
+        """
+        result = graphql(schema, query_string)
+        if result.errors:
+            return json.dumps({"errors" : [str(e) for e in result.errors]})
+        return json.dumps({ "player": result.data.get("speler") })
+    else:
+        return json.dumps({"error": "No player found"})
+        
 
 myWebApp.add_url_rule('/graphiql',
                         view_func=GraphQLView.as_view('graphql',

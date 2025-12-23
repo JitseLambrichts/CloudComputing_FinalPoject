@@ -7,15 +7,43 @@
 </head>
 <body>
   <h1>Live Value:</h1>
-  <div id="liveValue"></div>
+  <div id="liveValue">
+    <h2 id="title">Monitoring: ...</h2>
+    <div id="playerStats"></div>
+    <hr>
+    <div id="liveData"></div>
+  </div>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const playerName = urlParams.get('player') || 'Unknown';
 
-    document.getElementById('liveValue').innerHTML = `<h2> Monitoring: ${playerName}</h2> <div id="liveData"></div>`;
+    document.getElementById('title').innerText = `Monitoring: ${playerName}`;
 
     const ws = new WebSocket('ws://localhost:9292'); // WebSocket server address
+
+    async function loadPlayer() {
+        try {
+            const baseUrl  = "http://127.0.0.1:5001";
+            const url = `/api/proxy/graphql-player?player=${encodeURIComponent(playerName)}`
+
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.player) {
+                const playerInfoHtml = `
+                    <p>Nationaliteit: ${data.player.nationaliteit}</p>
+                    <p>Leeftijd: ${data.player.leeftijd}</p>
+                    <p>Aantal minuten gespeeld: ${data.player.minutenGespeeld}</p>
+                `
+
+                document.getElementById('playerStats').innerHTML = playerInfoHtml;
+            }
+        } catch (error) {
+            console.error("Fout bij het laden van speler:", error);
+        }
+    }
+
+    loadPlayer();
 
     // TOEVOEGEN: Stuur spelernaam naar server bij verbinding
     ws.onopen = function () {
