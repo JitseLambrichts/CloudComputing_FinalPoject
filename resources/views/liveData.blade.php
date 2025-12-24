@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebSocket MQTT Subscriber</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <h1>Live Value:</h1>
@@ -12,6 +13,11 @@
     <div id="playerStats"></div>
     <hr>
     <div id="liveData"></div>
+  </div>
+  <hr>
+  {{-- Voor de grafieken --}}
+  <div id="chart-container">
+    <iframe src="http://localhost:3000" style="width:50%; height:400px; border:none;"></iframe>
   </div>
 
   <script>

@@ -53,6 +53,7 @@ wss.on('connection', function connection(ws) {
     });
 
     const topic = baseTopic;
+    
     client.subscribe(topic, function (err) {
         if (err) {
             console.error('Subscription error: ', err);

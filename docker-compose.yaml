@@ -89,6 +89,15 @@ services:
       - DB_DATABASE=finaletaakcloudcomputing
       - DB_USERNAME=root
       - DB_PASSWORD=
+      
+  chart:
+    build:
+      context: ./services/Chart
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
 
 networks:
   app-network:
