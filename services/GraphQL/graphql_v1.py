@@ -181,10 +181,6 @@ def maakScore(row):
     return Score(
             thuisploeg_doelpunten = row['home_team_goal_count'],
             uitploeg_doelpunten = row['away_team_goal_count'],
-            # thuisploeg_tijdstippen_doelpunten = formatTijdstippen(row['home_team_goal_timings']),
-            # uitploeg_tijdstippen_doelpunten =formatTijdstippen(row['away_team_goal_timings']),
-            # thuisploeg_verwachte_doelpunten = row['team_a_xg'],
-            # uitploeg_verwachte_doelpunten = row['team_b_xg'],
     )
 
 def maakWinnaar(row):
