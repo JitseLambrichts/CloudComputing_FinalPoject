@@ -13,18 +13,29 @@ const myChart = new Chart(ctx, {
         labels: labels,
         datasets: [
             {
-                label: "Hartslag (bpm)",
+                label: "Hartslag",
                 data: heartRateData,
                 borderColor: "rgb(255, 0, 0)",
                 tension: 0.1,
             },
         ],
     },
+    /* Pas dit aan in services/Chart/src/chart.js */
     options: {
         responsive: true,
         scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: "Minuut"
+                }
+            },
             y: {
-                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Hartslag (bpm)"
+                },
+                beginAtZero: true, // Deze moet buiten 'title' staan
             },
         },
     },

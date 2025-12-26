@@ -1,0 +1,19 @@
+/* Gebruik # voor ID selector */
+#liveData {
+    display: flex;
+    flex-direction: row; /* Zet items naast elkaar */
+    align-items: flex-start; /* Zorg dat ze bovenaan uitlijnen */
+    gap: 2rem; /* Ruimte tussen de tekst en de grafiek */
+    padding: 20px;
+}
+#liveDataText {
+    flex: 1; /* Neemt de beschikbare ruimte in */
+}
+#chart-container {
+    flex: 1; /* De grafiek neemt de andere helft in */
+}
+/* Zorg dat de iframe de volledige breedte van zijn container gebruikt */
+#chart-container iframe {
+    width: 100% !important;
+    height: 500px;
+}
