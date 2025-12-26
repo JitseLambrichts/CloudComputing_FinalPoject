@@ -95,7 +95,6 @@
                         <div class="match-info"><strong>Aantal bezoekers: </strong>${match.aantalBezoekers}</div>
                         <div class="match-info"><strong>Scheidsrechter: </strong>${match.scheidsrechter}</div>
                         <br>
-                        <br>
                         <div class="match-content">
                             <div class="team">
                                 <div class="team-name">${match.thuisploeg.naam}</div>
@@ -106,6 +105,18 @@
                                 <div class="team-name">${match.uitploeg.naam}</div>
                                 <div class="score">${match.score.uitploegDoelpunten}</div>
                             </div>
+                        </div>
+                        <br>
+                        <button class="more-info-toggle" onclick="toggleMatchInfo(this)">▼ Meer info</button>
+                        <div class="match-extra-info">
+                            <h4>📊 Extra Statistieken</h4>
+                            <p><strong>🟨 Gele kaarten:</strong> ${match.thuisploegGeleKaarten || 0} - ${match.uitploegGeleKaarten || 0}</p>
+                            <p><strong>🟥 Rode kaarten:</strong> ${match.thuisploegRodeKaarten || 0} - ${match.uitploegRodeKaarten || 0}</p>
+                            <p><strong>⚽ Schoten:</strong> ${match.thuisploegSchoten || 0} - ${match.uitploegSchoten || 0}</p>
+                            <p><strong>🎯 Schoten op doel:</strong> ${match.thuisploegSchotenOpDoel || 0} - ${match.uitploegSchotenOpDoel || 0}</p>
+                            <p><strong>🚩 Hoekschoppen:</strong> ${match.thuisploegHoekschoppen || 0} - ${match.uitploegHoekschoppen || 0}</p>
+                            <p><strong>⚠️ Overtredingen:</strong> ${match.thuisploegOvertredingen || 0} - ${match.uitploegOvertredingen || 0}</p>
+                            <p><strong>📈 Balbezit:</strong> ${match.thuisploegBalbezit || 0}% - ${match.uitploegBalbezit || 0}%</p>
                         </div>
                     </div>
                 `;
@@ -124,6 +135,13 @@
             const container = document.getElementById('players-container');
             container.classList.toggle('show');
         }
+
+        function toggleMatchInfo(button) {
+            const extraInfo = button.nextElementSibling;
+            extraInfo.classList.toggle('show');
+            button.textContent = extraInfo.classList.contains('show') ? '▲ Minder info' : '▼ Meer info';
+        }
+
     </script>
 </body>
 </html>

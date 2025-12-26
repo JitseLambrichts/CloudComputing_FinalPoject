@@ -37,6 +37,20 @@ class Match(ObjectType):
     winnaar = Field(lambda: Team, description="Het winnende team (None bij gelijkspel)")           
     aantal_bezoekers = Field(Int, description="Aantal toeschouwers")
     stadion = Field(String, required=True, description="Naam van het stadion")
+    thuisploeg_hoekschoppen = Field(Int, description="Aantal hoekschoppen thuisploeg")
+    uitploeg_hoekschoppen = Field(Int, description="Aantal hoekschoppen uitploeg")
+    thuisploeg_gele_kaarten = Field(Int, description="Aantal gele kaarten thuisploeg")
+    uitploeg_gele_kaarten = Field(Int, description="Aantal gele kaarten uitploeg")
+    thuisploeg_rode_kaarten = Field(Int, description="Aantal rode kaarten thuisploeg")
+    uitploeg_rode_kaarten = Field(Int, description="Aantal rode kaarten uitploeg")
+    thuisploeg_schoten = Field(Int, description="Aantal schoten thuisploeg")
+    uitploeg_schoten = Field(Int, description="Aantal schoten uitploeg")
+    thuisploeg_schoten_op_doel = Field(Int, description="Schoten op doel thuisploeg")
+    uitploeg_schoten_op_doel = Field(Int, description="Schoten op doel uitploeg")
+    thuisploeg_overtredingen = Field(Int, description="Aantal overtredingen thuisploeg")
+    uitploeg_overtredingen = Field(Int, description="Aantal overtredingen uitploeg")
+    thuisploeg_balbezit = Field(Int, description="Balbezit thuisploeg (%)")
+    uitploeg_balbezit = Field(Int, description="Balbezit uitploeg (%)")
     
 class Score(ObjectType):
     """Scoreinformatie van een wedstrijd"""
@@ -146,7 +160,21 @@ def maakMatch(row):
         score = maakScore(row),
         winnaar = maakWinnaar(row),
         aantal_bezoekers = row['attendance'],
-        stadion = row['stadium_name']
+        stadion = row['stadium_name'],
+        thuisploeg_hoekschoppen = row.get('home_team_corner_count'),
+        uitploeg_hoekschoppen = row.get('away_team_corner_count'),
+        thuisploeg_gele_kaarten = row.get('home_team_yellow_cards'),
+        uitploeg_gele_kaarten = row.get('away_team_yellow_cards'),
+        thuisploeg_rode_kaarten = row.get('home_team_red_cards'),
+        uitploeg_rode_kaarten = row.get('away_team_red_cards'),
+        thuisploeg_schoten = row.get('home_team_shots'),
+        uitploeg_schoten = row.get('away_team_shots'),
+        thuisploeg_schoten_op_doel = row.get('home_team_shots_on_target'),
+        uitploeg_schoten_op_doel = row.get('away_team_shots_on_target'),
+        thuisploeg_overtredingen = row.get('home_team_fouls'),
+        uitploeg_overtredingen = row.get('away_team_fouls'),
+        thuisploeg_balbezit = row.get('home_team_possession'),
+        uitploeg_balbezit = row.get('away_team_possession')
     )
 
 def maakScore(row):
@@ -340,6 +368,20 @@ def api_matches():
                     thuisploegDoelpunten
                     uitploegDoelpunten
                 }}
+                thuisploegHoekschoppen
+                uitploegHoekschoppen
+                thuisploegGeleKaarten
+                uitploegGeleKaarten
+                thuisploegRodeKaarten
+                uitploegRodeKaarten
+                thuisploegSchoten
+                uitploegSchoten
+                thuisploegSchotenOpDoel
+                uitploegSchotenOpDoel
+                thuisploegOvertredingen
+                uitploegOvertredingen
+                thuisploegBalbezit
+                uitploegBalbezit
             }}
         }}
         """

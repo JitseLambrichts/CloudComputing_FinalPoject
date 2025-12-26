@@ -171,3 +171,30 @@ button:hover {
     color: #555;
     font-size: 14px;
 }
+
+.match-extra-info {
+    display: none;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 3px solid #3498db;
+}
+
+.match-extra-info.show {
+    display: block;
+}
+
+.match-card .more-info-toggle {
+    background: transparent !important;
+    border: none !important;
+    color: #3498db;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 0;
+}
+
+.match-card .more-info-toggle:hover {
+    text-decoration: underline;
+    background: transparent !important;
+}
