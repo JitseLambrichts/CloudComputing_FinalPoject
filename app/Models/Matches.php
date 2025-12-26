@@ -18,7 +18,7 @@ class Matches extends Model
         ];
     }
 
-    public function getWinner(): ?Team
+    public function getWinner(): ? Team
     {
         if ($this->home_team_goal_count > $this->away_team_goal_count) {
             return $this->homeTeam;
