@@ -51,6 +51,11 @@ class Match(ObjectType):
     uitploeg_overtredingen = Field(Int, description="Aantal overtredingen uitploeg")
     thuisploeg_balbezit = Field(Int, description="Balbezit thuisploeg (%)")
     uitploeg_balbezit = Field(Int, description="Balbezit uitploeg (%)")
+    thuisploeg_verwachte_doelpunten = Field(Float, description="Hoeveel verwachte doelpunten de thuisploeg zou scoren")
+    uitploeg_verwachte_doelpunten = Field(Float, description="Hoeveel verwachte doelpunten de uitploeg zou scoren")
+    thuisploeg_odds = Field(Float, description="Winkansen van de thuisploeg")
+    gelijkspel_odds = Field(Float, description="De kans op een gelijkspel")
+    uitploeg_odds = Field(Float, description="Winkansen van de uitploeg")
     
 class Score(ObjectType):
     """Scoreinformatie van een wedstrijd"""
@@ -174,7 +179,12 @@ def maakMatch(row):
         thuisploeg_overtredingen = row.get('home_team_fouls'),
         uitploeg_overtredingen = row.get('away_team_fouls'),
         thuisploeg_balbezit = row.get('home_team_possession'),
-        uitploeg_balbezit = row.get('away_team_possession')
+        uitploeg_balbezit = row.get('away_team_possession'),
+        thuisploeg_verwachte_doelpunten = row.get('team_a_xg'),
+        uitploeg_verwachte_doelpunten = row.get('team_b_xg'),
+        thuisploeg_odds = row.get('odds_ft_home_team_win'),
+        gelijkspel_odds = row.get('odds_ft_draw'),
+        uitploeg_odds = row.get('odds_ft_away_team_win')
     )
 
 def maakScore(row):
@@ -378,6 +388,11 @@ def api_matches():
                 uitploegOvertredingen
                 thuisploegBalbezit
                 uitploegBalbezit
+                thuisploegVerwachteDoelpunten
+                uitploegVerwachteDoelpunten
+                thuisploegOdds
+                gelijkspelOdds
+                uitploegOdds
             }}
         }}
         """

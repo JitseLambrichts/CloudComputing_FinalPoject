@@ -39,9 +39,9 @@ return new class extends Migration
             $table->integer('away_team_possession')->nullable();
             $table->decimal('team_a_xg', 5, 2)->nullable();             //5 staat voor het totaal aantal cijfers, en 2 staat voor het aantal decimalen
             $table->decimal('team_b_xg', 5, 2)->nullable();
+            $table->decimal('odds_ft_home_team_win', 5, 2)->nullable();
             $table->decimal('odds_ft_draw', 5, 2)->nullable();
             $table->decimal('odds_ft_away_team_win', 5, 2)->nullable();
-            $table->decimal('odds_ft_over15', 5, 2)->nullable();
             $table->timestamps();
         });
     }

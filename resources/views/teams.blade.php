@@ -75,7 +75,7 @@
                     // Datum omzetten naar een datum object
                     const datumObj = new Date(match.datum);
                     
-                    // Als niet kan worden omgeze, dan omzetten naar een string (hulp copilot -> bronvermelding)
+                    // Als niet kan worden omgeze, dan omzetten naar een string (hulp Copilot -> bronvermelding)
                     const datumNL = isNaN(datumObj.getTime()) 
                         ? match.datum 
                         : datumObj.toLocaleDateString('nl-NL', {
@@ -114,9 +114,11 @@
                             <p><strong>🟥 Rode kaarten:</strong> ${match.thuisploegRodeKaarten || 0} - ${match.uitploegRodeKaarten || 0}</p>
                             <p><strong>⚽ Schoten:</strong> ${match.thuisploegSchoten || 0} - ${match.uitploegSchoten || 0}</p>
                             <p><strong>🎯 Schoten op doel:</strong> ${match.thuisploegSchotenOpDoel || 0} - ${match.uitploegSchotenOpDoel || 0}</p>
+                            <p><strong>Verwachte doelpunten:</strong> ${match.thuisploegVerwachteDoelpunten || 0} - ${match.uitploegVerwachteDoelpunten || 0}</p>
                             <p><strong>🚩 Hoekschoppen:</strong> ${match.thuisploegHoekschoppen || 0} - ${match.uitploegHoekschoppen || 0}</p>
                             <p><strong>⚠️ Overtredingen:</strong> ${match.thuisploegOvertredingen || 0} - ${match.uitploegOvertredingen || 0}</p>
                             <p><strong>📈 Balbezit:</strong> ${match.thuisploegBalbezit || 0}% - ${match.uitploegBalbezit || 0}%</p>
+                            <p><strong>Odds:</strong> ${match.thuisploegOdds || 0} - ${match.gelijkspelOdds || 0} - ${match.uitploegOdds || 0}</p>
                         </div>
                     </div>
                 `;

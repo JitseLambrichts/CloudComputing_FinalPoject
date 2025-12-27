@@ -54,9 +54,9 @@ class MatchesSeeder extends Seeder
                     'away_team_possession'          => (int)$row['away_team_possession'], 
                     'team_a_xg'                     => (float)$row['team_a_xg'],
                     'team_b_xg'                     => (float)$row['team_b_xg'],
+                    'odds_ft_home_team_win'         => (float)$row['odds_ft_home_team_win'],
                     'odds_ft_draw'                  => (float)$row['odds_ft_draw'],
                     'odds_ft_away_team_win'         => (float)$row['odds_ft_away_team_win'],
-                    'odds_ft_over15'                => (float)$row['odds_ft_over15'],
                 ]);
             }
         }
