@@ -7,7 +7,7 @@
         {
             "TYPE": "single",
             "PREFIX": "prestatie",
-            "TIME_INTERVAL": 4,
+            "TIME_INTERVAL": 1,
             "DATA": [
                 {
                     "NAME": "hartslag",
