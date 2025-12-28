@@ -15,7 +15,7 @@
     <hr>
     <div id="liveData">
         <div id="liveDataText"></div>
-        <div id="chart-container"> <iframe src="http://localhost:3000" style="width:50%; height:400px; border:none;"></iframe> </div>
+        <div id="chart-container"> <iframe src="http://localhost:3000"></iframe> </div>
     </div>
   </div>
   <hr>

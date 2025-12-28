@@ -10,10 +10,12 @@
     flex: 1; /* Neemt de beschikbare ruimte in */
 }
 #chart-container {
-    flex: 1; /* De grafiek neemt de andere helft in */
+    flex: 1;
+    width: 100vw;
 }
 /* Zorg dat de iframe de volledige breedte van zijn container gebruikt */
 #chart-container iframe {
     width: 100% !important;
     height: 500px;
+    border: none;
 }
