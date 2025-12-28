@@ -34,6 +34,8 @@ const client = mqtt.connect({
 
 const wss = new WebSocket.Server({ port:9292 });
 let activeConnections = 0;
+let messageCount = 0;
+const MAX_MESSAGES = 120; // Want 120 minuten in eem match -> dus na 120 punten stoppen
 
 wss.on('connection', function connection(ws) {
     console.log('Websocket client succesfully connected');
@@ -84,6 +86,14 @@ wss.on('connection', function connection(ws) {
 
 client.on('message', function (mqttTopic, message) {
     if (mqttTopic === baseTopic) {
+        messageCount++;
+
+        if (messageCount > MAX_MESSAGES) {
+            console.log("Match fully simulated, now closing MQTT");
+            client.unsubscribe(baseTopic);
+            return;
+        }
+
         const data = JSON.parse(message.toString());
         console.log('Received message on topic: ', mqttTopic);
 

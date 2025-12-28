@@ -55,11 +55,6 @@ wss.onmessage = function (event) {
         minute++;
         heartRateData.push(data.hartslag);
 
-        if (labels.length > 90) {
-            labels.shift();
-            heartRateData.shift();
-        }
-
         myChart.update();
     } catch (e) {
         console.log("Received non-JSON message: ", event.data);

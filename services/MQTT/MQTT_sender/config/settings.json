@@ -12,10 +12,10 @@
                 {
                     "NAME": "hartslag",
                     "TYPE": "int",
-                    "MIN_VALUE": 40,
+                    "MIN_VALUE": 70,
                     "MAX_VALUE": 220,
-                    "MAX_STEP": 5,
-                    "RETAIN_PROBABILITY": 0.2
+                    "MAX_STEP": 10,
+                    "RETAIN_PROBABILITY": 0.1
                 },
                 {
                     "NAME": "systolische_bloeddruk",
@@ -31,7 +31,7 @@
                     "MIN_VALUE": 1,
                     "MAX_VALUE": 20,
                     "MAX_STEP": 0.5,
-                    "RETAIN_PROBABILITY": 0.2
+                    "RETAIN_PROBABILITY": 0.3
                 },
                 {
                     "NAME": "zuurstof_opname",
@@ -39,7 +39,7 @@
                     "MIN_VALUE": 10,
                     "MAX_VALUE": 90,
                     "MAX_STEP": 1,
-                    "RETAIN_PROBABILITY": 0.2
+                    "RETAIN_PROBABILITY": 0.3
                 },
                 {
                     "NAME": "hartminuutvolume",
@@ -52,10 +52,10 @@
                 {
                     "NAME": "maximale_belasting", 
                     "TYPE": "int",
-                    "MIN_VALUE": 50,
+                    "MIN_VALUE": 60,
                     "MAX_VALUE": 450,
-                    "MAX_STEP": 10,
-                    "RETAIN_PROBABILITY": 0.2
+                    "MAX_STEP": 20,
+                    "RETAIN_PROBABILITY": 0.1
                 },
                 {
                     "NAME": "anaerobe_drempel",
