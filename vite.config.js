@@ -7,9 +7,10 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/css/app.css",
-                "resources/js/app.js",
                 "resources/css/speler.css",
                 "resources/css/teams.css",
+                "resources/css/news.css",
+                "resources/js/app.js",
             ],
             refresh: true,
         }),

@@ -1,0 +1,24 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.article {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+.article img {
+    height: 300px;
+    width: auto;
+    border-radius: 4px;
+}
+.article h2 {
+    margin-top: 0;
+}
+.article a {
+    color: #007bff;
+    text-decoration: none;
+}

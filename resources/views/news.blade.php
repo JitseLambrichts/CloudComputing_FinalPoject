@@ -4,32 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sport Nieuws</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .article {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        .article img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-        }
-        .article h2 {
-            margin-top: 0;
-        }
-        .article a {
-            color: #007bff;
-            text-decoration: none;
-        }
-    </style>
+    @vite(['resources/css/news.css'])
 </head>
 <body>
     <h1>Latest sportnews</h1>
