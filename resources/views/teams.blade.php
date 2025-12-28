@@ -56,7 +56,7 @@
                                 ${data.team.spelers && data.team.spelers.length > 0 
                                     ? data.team.spelers.map(player => `
                                         <div class="player-item">
-                                            • <a href="{{ route('speler') }}?player=${encodeURIComponent(player.naam)}">${player.naam}</a>
+                                            • <a href="{{ route('player') }}?player=${encodeURIComponent(player.naam)}">${player.naam}</a>
                                         </div>`).join('')
                                     : '<div class="player-item">Geen spelers beschikbaar</div>'
                                 }

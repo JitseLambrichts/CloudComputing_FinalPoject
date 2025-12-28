@@ -19,7 +19,7 @@ Route::get('/api/proxy/graphql-matches', function (Request $request) {
     return $response->json();
 });
 
-Route::view('/speler', 'speler')->name('speler');
+Route::view('/player', 'player')->name('player');
 Route::get('/api/proxy/graphql-player', function (Request $request) {
     $response = Http::get('http://graphql:5001/api/player', $request->all());
     return $response->json();
