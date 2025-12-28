@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebSocket MQTT Subscriber</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  @vite(['resources/css/liveDataPage.css'])
+  @vite(['resources/css/speler.css'])
 </head>
 <body>
   <h1>Live Value:</h1>

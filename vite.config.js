@@ -8,7 +8,7 @@ export default defineConfig({
             input: [
                 "resources/css/app.css",
                 "resources/js/app.js",
-                "resources/css/liveDataPage.css",
+                "resources/css/speler.css",
                 "resources/css/teams.css",
             ],
             refresh: true,
