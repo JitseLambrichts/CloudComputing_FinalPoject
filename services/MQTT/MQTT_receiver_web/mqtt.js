@@ -33,6 +33,7 @@ const client = mqtt.connect({
 });
 
 const wss = new WebSocket.Server({ port:9292 });
+let activeConnections = 0;
 
 wss.on('connection', function connection(ws) {
     console.log('Websocket client succesfully connected');
@@ -52,54 +53,72 @@ wss.on('connection', function connection(ws) {
         }
     });
 
-    const topic = baseTopic;
-    
-    client.subscribe(topic, function (err) {
-        if (err) {
-            console.error('Subscription error: ', err);
-        } else {
-            console.log('Succesfully subscribed to topic: ', topic);
-        }
-    });
+    activeConnections++;
+    console.log(`Client connected. Active connections: ${activeConnections}`);
 
-    client.on('message', function (mqttTopic, message) {
-        if (mqttTopic === topic) {
-            const data = JSON.parse(message.toString());
-            console.log('Received message on topic: ', mqttTopic);
+    if (activeConnections === 1) {
+        client.subscribe(baseTopic, function (err) {
+            if (err) {
+                console.error('Subscription error: ', err);
+            } else {
+                console.log('Succesfully subscribed to topic: ', baseTopic);
+            }
+        });
+    }
 
-            const grpcRequest = {
-                currentHeartRate: data.hartslag,
-                currentLactate: data.lactaat_waardes,
-                timestamp: Date.now()
-            };
+    ws.on('close', function() {
+        activeConnections--;
+        console.log(`Client disconnected. Active connections: ${activeConnections}`);
 
-            grpcClient.AnalyzePlayer(grpcRequest, (error, response) => {
-                if (error) {
-                    console.error("gRPC error: ", error);
-                    ws.send(JSON.stringify(data));
+        if (activeConnections === 0) {
+            client.unsubscribe(baseTopic, function(err) {
+                if (err) {
+                    console.error("Unsubscribe error: ", err);
                 } else {
-                    console.log("gRPC response: ", response);
-                    const enrichedData = {
-                        ...data,
-                        analysis: {
-                            recommendation: response.recommendation,
-                            shouldSubstitute: response.shouldSubstitute,
-                            fatigueLevel: response.fatigueLevel
-                        }
-                    };
-                    ws.send(JSON.stringify(enrichedData));
-                } 
+                    console.log("Unsubscribed from topic: ", baseTopic);
+                }
             });
         }
     });
+});
 
-    client.on('error', function (error) {
-        console.error('Error: ', error)
-    });
+client.on('message', function (mqttTopic, message) {
+    if (mqttTopic === baseTopic) {
+        const data = JSON.parse(message.toString());
+        console.log('Received message on topic: ', mqttTopic);
 
-    ws.on('close', function() {
-        console.log('Websocket client disconnected');
-    });
+        const grpcRequest = {
+            currentHeartRate: data.hartslag,
+            currentLactate: data.lactaat_waardes,
+            timestamp: Date.now()
+        };
+
+        wss.clients.forEach(function each(wsClient) {
+            if (wsClient.readyState === WebSocket.OPEN) {
+                grpcClient.AnalyzePlayer(grpcRequest, (error, response) => {
+                    if (error) {
+                        console.error("gRPC error: ", error);
+                        wsClient.send(JSON.stringify(data));
+                    } else {
+                        console.log("gRPC response: ", response);
+                        const enrichedData = {
+                            ...data,
+                            analysis: {
+                                recommendation: response.recommendation,
+                                shouldSubstitute: response.shouldSubstitute,
+                                fatigueLevel: response.fatigueLevel
+                            }
+                        };
+                        wsClient.send(JSON.stringify(enrichedData));
+                    } 
+                });
+            }
+        });
+    }
+});
+
+client.on('error', function (error) {
+    console.error('Error: ', error)
 });
 
 
