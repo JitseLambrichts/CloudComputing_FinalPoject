@@ -40,6 +40,13 @@
                     <p>Nationaliteit: ${data.player.nationaliteit}</p>
                     <p>Leeftijd: ${data.player.leeftijd}</p>
                     <p>Aantal minuten gespeeld: ${data.player.minutenGespeeld}</p>
+                    <p>Positie: ${data.player.positie}</p>
+                    <p>Club: ${data.player.club.naam}</p>
+                    <p>Nationaliteit: ${data.player.nationaliteit}</p>
+                    <p>Aantal doelpunten: ${data.player.aantalDoelpunten}</p>
+                    <p>Aantal assisten: ${data.player.aantalAssisten}</p>
+                    <p>Aantal gele kaarten: ${data.player.aantalGeleKaarten}</p>
+                    <p>Aantal rode kaarten: ${data.player.aantalRodeKaarten}</p>
                 `
 
                 document.getElementById('playerStats').innerHTML = playerInfoHtml;

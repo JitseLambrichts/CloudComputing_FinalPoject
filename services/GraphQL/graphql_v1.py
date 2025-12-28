@@ -440,6 +440,9 @@ def api_player():
         {{
             speler(name: "{player}") {{
                 naam
+                club {{
+                    naam
+                }}
                 leeftijd
                 positie
                 minutenGespeeld
