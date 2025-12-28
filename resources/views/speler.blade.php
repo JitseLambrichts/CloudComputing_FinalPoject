@@ -71,8 +71,14 @@
         let html = '<h3>Live Prestatie Data</h3>';
         html += `<p><strong>Hartslag:</strong> ${data.hartslag} bpm</p>`;
         html += `<p><strong>Lactaat:</strong> ${data.lactaat_waardes} mmol/L</p>`;
+        html += `<p><strong>Systolische Bloeddruk:</strong> ${data.systolische_bloeddruk} mmHg</p>`;
+        html += `<p><strong>Zuurstof Opname:</strong> ${data.zuurstof_opname} ml/min</p>`;
+        html += `<p><strong>Hartminuutvolume:</strong> ${data.hartminuutvolume} L/min</p>`;
+        html += `<p><strong>Maximale Belasting:</strong> ${data.maximale_belasting} W</p>`;
+        html += `<p><strong>Anaerobe Drempel:</strong> ${data.anaerobe_drempel} ml/min</p>`;
         
         if (data.analysis) {
+          html += `<hr>`;
           html += '<h3>Analyse (via gRPC)</h3>';
           html += `<p><strong>Aanbeveling:</strong> ${data.analysis.recommendation}</p>`;
           html += `<p><strong>Vermoeidheid:</strong> ${data.analysis.fatigueLevel}/10</p>`;
