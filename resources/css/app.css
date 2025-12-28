@@ -182,7 +182,7 @@
     font-weight: 300;
     letter-spacing: 0.1em;
     color: rgba(79, 70, 229, 0.6);
-    animation: fadeIn 1s ease-out 1.5s forwards;
+    animation: fadeIn 1s ease-out 1s forwards;
     opacity: 0;
 }
 
@@ -193,6 +193,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    animation: fadeIn 1s ease-out 1.5s forwards;
+    opacity: 0;
 }
 
 .links-container a {

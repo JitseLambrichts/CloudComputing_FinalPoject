@@ -28,5 +28,32 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="getPlayerStatsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="playerName" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getPlayerStatsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:int"/>
+                <xs:element name="full_name" type="xs:string"/>
+                <xs:element name="birthday_GMT" type="xs:string"/>
+                <xs:element name="age" type="xs:int"/>
+                <xs:element name="position" type="xs:string"/>
+                <xs:element name="team_id" type="xs:int"/>
+                <xs:element name="minutes_played_overall" type="xs:int"/>
+                <xs:element name="nationality" type="xs:string"/>
+                <xs:element name="goals_overall" type="xs:int"/>
+                <xs:element name="assists_overall" type="xs:int"/>
+                <xs:element name="yellow_cards_overall" type="xs:int"/>
+                <xs:element name="red_cards_overall" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>
 

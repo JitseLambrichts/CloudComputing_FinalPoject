@@ -52,9 +52,7 @@
             <p class="subtitle">DE CENTRALE PLAATS VOOR AL JOUW VOETBALGEGEVENS</p>
             
             <div class="links-container">
-                <a href="{{ route('grpc') }}">Ga naar GRPC</a>
                 <a href="{{ route('matches') }}">Ga naar Matches</a>
-                <a href="{{ route('data') }}">Ga naar Data</a>
             </div>
         </div>
     </div>

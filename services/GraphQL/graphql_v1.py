@@ -27,6 +27,11 @@ def get_team_stats_via_soap(team_name):
     response = client.service.getTeamStats(teamName=team_name)
     return response
 
+def get_player_stats_via_soap(player_name):
+    client = Client(SOAP_WSDL_URL)
+    response = client.service.getPlayerStats(playerName=player_name)
+    return response
+
 class Match(ObjectType):
     """Een voetbalwedstrijd tussen twee teams"""
     datum = Field(String, required=True, description="Datum van de wedstrijd (GMT)")
@@ -246,17 +251,36 @@ class Query(ObjectType):
     team_matches = List(Match, team_name=Argument(String, required=True, description="Naam van het team"), limit=Argument(Int, description="Maximaal aantal resultaten"), offset=Argument(Int, default_value=0, description="Aantal over te slaan"), description="Alle wedstrijden van een specifiek team")
 
     def resolve_speler(parent, info, name):
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
+        # connection = get_db_connection()
+        # cursor = connection.cursor(dictionary=True)
 
-        query = "SELECT * FROM players WHERE full_name = %s"
+        # query = "SELECT * FROM players WHERE full_name = %s"
 
-        cursor.execute(query, (name,))
-        player_row = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return maakPlayer(player_row)
-    
+        # cursor.execute(query, (name,))
+        # player_row = cursor.fetchone()
+        # cursor.close()
+        # connection.close()
+        # return maakPlayer(player_row)
+
+        soap_response = get_player_stats_via_soap(name)
+
+        if soap_response:
+            return Player(
+                naam=soap_response.full_name,
+                geboorte_datum=soap_response.birthday_GMT,
+                leeftijd=soap_response.age,
+                positie=soap_response.position,
+                club=get_team_by_id(soap_response.team_id),
+                minuten_gespeeld=soap_response.minutes_played_overall,
+                nationaliteit=soap_response.nationality,
+                aantal_doelpunten=soap_response.goals_overall,
+                aantal_assisten=soap_response.assists_overall,
+                aantal_gele_kaarten=soap_response.yellow_cards_overall,
+                aantal_rode_kaarten=soap_response.red_cards_overall
+            )
+        return None
+            
+            
     def resolve_spelers(parent, info):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -319,6 +343,7 @@ class Query(ObjectType):
 
 
 schema = Schema(query=Query)
+
 
 myWebApp = Flask("My App")
 CORS(myWebApp)
