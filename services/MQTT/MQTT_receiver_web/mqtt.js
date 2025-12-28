@@ -78,6 +78,7 @@ wss.on('connection', function connection(ws) {
                     console.error("Unsubscribe error: ", err);
                 } else {
                     console.log("Unsubscribed from topic: ", baseTopic);
+                    messageCount = 0;
                 }
             });
         }
