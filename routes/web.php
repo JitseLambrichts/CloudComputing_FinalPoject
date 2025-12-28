@@ -1,10 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GrpcController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
+use App\Http\Controllers\GrpcController;
+use App\Http\Controllers\NewsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,3 +24,5 @@ Route::get('/api/proxy/graphql-player', function (Request $request) {
     $response = Http::get('http://graphql:5001/api/player', $request->all());
     return $response->json();
 });
+
+Route::get('/news', [NewsController::class, 'index'])->name('news');

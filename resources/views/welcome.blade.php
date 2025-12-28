@@ -53,6 +53,7 @@
             
             <div class="links-container">
                 <a href="{{ route('matches') }}">Ga naar Matches</a>
+                <a href="{{ route('news') }}">Ga naar Nieuws</a>
             </div>
         </div>
     </div>
