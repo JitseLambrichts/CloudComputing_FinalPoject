@@ -6,21 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voetbal Wedstrijden</title>
-    @vite(['resources/css/teams.css'])
+    @vite(['resources/css/teams.css', 'resources/css/navbar.css'])
 </head>
 <body>
-    <div class="container">
-        <h1>⚽ Premier League Matches via GraphQL</h1>
-        <form>
-            <input type="text" id="team" placeholder="Geef hier een ploegnaam in om te zoeken (uit de Premier League)...">
-            <button type="button" onclick="loadMatches()">Zoek</button>
-        </form>
-        <br>
-        <br>
-        <div id="teaminfocontainer"></div>      <!-- Container voor de team-informatie -->
-        <div id="matches-container" class="matches-grid"></div>   <!-- Container voor de matches-containers -->
-        <br>
-        <br>
+    @include('partials.navbar')
+    
+    <div class="main-content-with-sidebar">
+        <div class="container">
+            <h1>⚽ Premier League Matches via GraphQL</h1>
+            <form>
+                <input type="text" id="team" placeholder="Geef hier een ploegnaam in om te zoeken (uit de Premier League)...">
+                <button type="button" onclick="loadMatches()">Zoek</button>
+            </form>
+            <br>
+            <br>
+            <div id="teaminfocontainer"></div>      <!-- Container voor de team-informatie -->
+            <div id="matches-container" class="matches-grid"></div>   <!-- Container voor de matches-containers -->
+            <br>
+            <br>
+        </div>
     </div>
 
     <script>

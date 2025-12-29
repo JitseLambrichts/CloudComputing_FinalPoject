@@ -10,6 +10,7 @@ export default defineConfig({
                 "resources/css/player.css",
                 "resources/css/teams.css",
                 "resources/css/news.css",
+                "resources/css/navbar.css",
                 "resources/js/app.js",
                 "resources/js/player.js",
             ],

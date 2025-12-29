@@ -52,8 +52,7 @@
             <p class="subtitle">DE CENTRALE PLAATS VOOR AL JOUW VOETBALGEGEVENS</p>
             
             <div class="links-container">
-                <a href="{{ route('matches') }}">Ga naar Matches</a>
-                <a href="{{ route('news') }}">Ga naar Nieuws</a>
+                <a href="{{ route('matches') }}" class="dashboard-btn">Ga naar Dashboard</a>
             </div>
         </div>
     </div>
