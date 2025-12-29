@@ -13,9 +13,9 @@
     
     <div class="main-content-with-sidebar">
         <div class="container">
-            <h1>⚽ Premier League Matches via GraphQL</h1>
+            <h1>Premier League Matches</h1>
             <form>
-                <input type="text" id="team" placeholder="Geef hier een ploegnaam in om te zoeken (uit de Premier League)...">
+                <input type="text" id="team" placeholder="Zoek een Premier League team...">
                 <button type="button" onclick="loadMatches()">Zoek</button>
             </form>
             <br>
@@ -60,7 +60,7 @@
                                 ${data.team.spelers && data.team.spelers.length > 0 
                                     ? data.team.spelers.map(player => `
                                         <div class="player-item">
-                                            • <a href="{{ route('player') }}?player=${encodeURIComponent(player.naam)}">${player.naam}</a>
+                                            <a href="{{ route('player') }}?player=${encodeURIComponent(player.naam)}">${player.naam}</a>
                                         </div>`).join('')
                                     : '<div class="player-item">Geen spelers beschikbaar</div>'
                                 }
@@ -95,10 +95,11 @@
                     return `
                     <div class="match-card">
                         <div class="match-date">${datumNL}</div>
-                        <div class="match-info"><strong>Stadion: </strong>${match.stadion}</div>
-                        <div class="match-info"><strong>Aantal bezoekers: </strong>${match.aantalBezoekers}</div>
-                        <div class="match-info"><strong>Scheidsrechter: </strong>${match.scheidsrechter}</div>
-                        <br>
+                        <div class="match-details-container">
+                            <div class="match-info"><strong>Stadion: </strong>${match.stadion}</div>
+                            <div class="match-info"><strong>Aantal bezoekers: </strong>${match.aantalBezoekers}</div>
+                            <div class="match-info"><strong>Scheidsrechter: </strong>${match.scheidsrechter}</div>
+                        </div>
                         <div class="match-content">
                             <div class="team">
                                 <div class="team-name">${match.thuisploeg.naam}</div>
