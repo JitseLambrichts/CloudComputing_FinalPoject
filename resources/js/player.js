@@ -63,33 +63,79 @@ async function loadPlayer() {
 
 loadPlayer();
 
-// TOEVOEGEN: Stuur spelernaam naar server bij verbinding
+// Status Indicator Logic
+const statusBadge = document.getElementById("connectionStatus");
+let dataWatchdog;
+
+function updateStatus(state) {
+    if (!statusBadge) return;
+
+    statusBadge.className = "status-badge"; // Reset classes
+
+    switch (state) {
+        case "connected":
+            statusBadge.innerText = "Live Connection";
+            statusBadge.classList.remove("warning", "error");
+            break;
+        case "disconnected":
+            statusBadge.innerText = "Disconnected";
+            statusBadge.classList.add("error");
+            break;
+        case "no-data":
+            statusBadge.innerText = "No Data Flow";
+            statusBadge.classList.add("warning");
+            break;
+    }
+}
+
 ws.onopen = function () {
     console.log("WebSocket connection established");
-    // ws.send(JSON.stringify({ type: 'setPlayer', playerName: playerName }));
+    updateStatus("connected");
 };
 
 ws.onmessage = function (event) {
+    // Reset watchdog on every message
+    clearTimeout(dataWatchdog);
+    updateStatus("connected");
+
+    // Set watchdog: if no data for 3 seconds, show warning
+    dataWatchdog = setTimeout(() => {
+        updateStatus("no-data");
+    }, 3000);
+
     const data = JSON.parse(event.data);
 
     // Voor front-end printing Copilot --> bronvermelding
     let html = "<h3>Live Prestatie Data</h3>";
-    html += `<p><strong>Hartslag:</strong> ${data.hartslag} bpm</p>`;
-    html += `<p><strong>Lactaat:</strong> ${data.lactaat_waardes} mmol/L</p>`;
-    html += `<p><strong>Systolische Bloeddruk:</strong> ${data.systolische_bloeddruk} mmHg</p>`;
-    html += `<p><strong>Zuurstof Opname:</strong> ${data.zuurstof_opname} ml/min</p>`;
-    html += `<p><strong>Hartminuutvolume:</strong> ${data.hartminuutvolume} L/min</p>`;
-    html += `<p><strong>Maximale Belasting:</strong> ${data.maximale_belasting} W</p>`;
-    html += `<p><strong>Anaerobe Drempel:</strong> ${data.anaerobe_drempel} ml/min</p>`;
+    html += `<div class="stat-row"><p><strong>Hartslag:</strong> ${parseFloat(
+        data.hartslag
+    ).toFixed(0)} bpm</p></div>`;
+    html += `<div class="stat-row"><p><strong>Lactaat:</strong> ${parseFloat(
+        data.lactaat_waardes
+    ).toFixed(1)} mmol/L</p></div>`;
+    html += `<div class="stat-row"><p><strong>Systolische Bloeddruk:</strong> ${parseFloat(
+        data.systolische_bloeddruk
+    ).toFixed(0)} mmHg</p></div>`;
+    html += `<div class="stat-row"><p><strong>Zuurstof Opname:</strong> ${parseFloat(
+        data.zuurstof_opname
+    ).toFixed(1)} ml/min</p></div>`;
+    html += `<div class="stat-row"><p><strong>Hartminuutvolume:</strong> ${parseFloat(
+        data.hartminuutvolume
+    ).toFixed(1)} L/min</p></div>`;
+    html += `<div class="stat-row"><p><strong>Maximale Belasting:</strong> ${parseFloat(
+        data.maximale_belasting
+    ).toFixed(0)} W</p></div>`;
+    html += `<div class="stat-row"><p><strong>Anaerobe Drempel:</strong> ${parseFloat(
+        data.anaerobe_drempel
+    ).toFixed(0)} ml/min</p></div>`;
 
     if (data.analysis) {
-        html += `<hr>`;
         html += "<h3>Analyse (via gRPC)</h3>";
-        html += `<p><strong>Aanbeveling:</strong> ${data.analysis.recommendation}</p>`;
-        html += `<p><strong>Vermoeidheid:</strong> ${data.analysis.fatigueLevel}/10</p>`;
-        html += `<p><strong>Wisselen:</strong> ${
+        html += `<div class="stat-row"><p><strong>Aanbeveling:</strong> ${data.analysis.recommendation}</p></div>`;
+        html += `<div class="stat-row"><p><strong>Vermoeidheid:</strong> ${data.analysis.fatigueLevel}/10</p></div>`;
+        html += `<div class="stat-row"><p><strong>Wisselen:</strong> ${
             data.analysis.shouldSubstitute ? "JA ⚠️" : "Nee ✅"
-        }</p>`;
+        }</p></div>`;
     }
 
     document.getElementById("liveDataText").innerHTML = html;
@@ -97,4 +143,11 @@ ws.onmessage = function (event) {
 
 ws.onclose = function () {
     console.log("WebSocket connection closed");
+    updateStatus("disconnected");
+    clearTimeout(dataWatchdog);
+};
+
+ws.onerror = function (error) {
+    console.error("WebSocket error:", error);
+    updateStatus("disconnected");
 };

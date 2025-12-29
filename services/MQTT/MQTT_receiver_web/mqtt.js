@@ -35,7 +35,7 @@ const client = mqtt.connect({
 const wss = new WebSocket.Server({ port:9292 });
 let activeConnections = 0;
 let messageCount = 0;
-const MAX_MESSAGES = 120; // Want 120 minuten in eem match -> dus na 120 punten stoppen
+const MAX_MESSAGES = 90; // Want 120 minuten in eem match -> dus na 120 punten stoppen
 
 wss.on('connection', function connection(ws) {
     console.log('Websocket client succesfully connected');

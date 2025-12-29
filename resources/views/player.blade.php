@@ -13,7 +13,7 @@
     <div class="container">
         <div class="dashboard-header">
             <h1 id="title">Monitoring Player</h1>
-            <div class="status-badge">Live Connection</div>
+            <div id="connectionStatus" class="status-badge">Connecting...</div>
         </div>
 
         <div class="dashboard-grid">

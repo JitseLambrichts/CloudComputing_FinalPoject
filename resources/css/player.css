@@ -80,6 +80,28 @@ body {
     animation: pulse 2s infinite;
 }
 
+.status-badge.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706; /* Amber 600 */
+    border-color: rgba(245, 158, 11, 0.2);
+}
+
+.status-badge.warning::before {
+    background: #d97706;
+    animation: none;
+}
+
+.status-badge.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626; /* Red 600 */
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.status-badge.error::before {
+    background: #dc2626;
+    animation: none;
+}
+
 @keyframes pulse {
     0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
     70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
