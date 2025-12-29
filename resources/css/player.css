@@ -1,21 +1,213 @@
-/* Gebruik # voor ID selector */
-#liveData {
+/* ===========================================
+   PLAYER DASHBOARD STYLES - Premium Design
+   =========================================== */
+
+/* Variables (Matching Team/News Theme) */
+:root {
+    --primary: #4f46e5;       /* Indigo 600 */
+    --primary-dark: #312e81;  /* Indigo 900 */
+    --secondary: #6366f1;     /* Indigo 500 */
+    --accent: #8b5cf6;        /* Violet 500 */
+    --bg-page: #f1f5f9;       /* Slate 100 */
+    --text-main: #1e1b4b;     /* Slate 900 */
+    --text-muted: #64748b;    /* Slate 500 */
+    --success: #10b981;       /* Emerald 500 */
+}
+
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-page);
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    color: var(--text-main);
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+.container {
+    max-width: 1400px; /* Wider for dashboard view */
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* Header Section */
+.dashboard-header {
     display: flex;
-    flex-direction: row; /* Zet items naast elkaar */
-    align-items: flex-start; /* Zorg dat ze bovenaan uitlijnen */
-    gap: 2rem; /* Ruimte tussen de tekst en de grafiek */
-    padding: 20px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
 }
-#liveDataText {
-    flex: 1; /* Neemt de beschikbare ruimte in */
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    background: linear-gradient(135deg, #1e1b4b 0%, #4f46e5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-#chart-container {
+
+.status-badge {
+    padding: 8px 16px;
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-badge::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Card Styling */
+.card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 10px 15px -3px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(241, 245, 249, 0.8);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.card-header {
+    padding: 20px 24px;
+    background: #f8fafc; /* Very light slate */
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.card-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 0;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+/* Player Stats Section */
+#playerStats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+/* Live Data Layout */
+.live-data-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+@media (min-width: 1024px) {
+    .live-data-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.live-text-panel {
     flex: 1;
-    width: 100vw;
+    min-width: 300px;
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
 }
-/* Zorg dat de iframe de volledige breedte van zijn container gebruikt */
+
+.chart-panel {
+    flex: 2;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    min-height: 400px;
+    border: 1px solid #e2e8f0;
+}
+
+/* Chart Iframe */
 #chart-container iframe {
-    width: 100% !important;
+    width: 100%;
     height: 500px;
     border: none;
+    display: block;
+}
+
+/* Dynamic Content Styling */
+.live-text-panel {
+    padding: 30px; /* Increased padding */
+}
+
+.live-text-panel h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin: 30px 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.live-text-panel h3:first-child {
+    margin-top: 0;
+}
+
+.live-text-panel hr {
+    display: none; /* Hidden favouring H3 styling */
+}
+
+.live-text-panel p {
+    margin-bottom: 16px;
+    font-size: 1rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dotted #cbd5e1;
+    padding-bottom: 8px;
+}
+
+.live-text-panel p:last-child {
+    border-bottom: none;
+}
+
+.live-text-panel p strong {
+    color: darkslategrey;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Loading/Empty States */
+.stats-content:empty::before {
+    content: 'Waiting for player selection...';
+    color: var(--text-muted);
+    font-style: italic;
 }
