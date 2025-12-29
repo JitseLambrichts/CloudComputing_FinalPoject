@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Manager</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/navbar.css'])
 </head>
 {{-- Voor Front-end is gebruik gemaakt van een template --> bronvermelding (zie css) --}}
 <body>
+    @include('partials.navbar')
     <div class="neon-orbs-container">
         <!-- Top-left orb -->
         <div class="orb orb-top-left">
@@ -50,10 +51,6 @@
         <div class="center-content">
             <h1 class="title">VOETBAL MANAGER</h1>
             <p class="subtitle">DE CENTRALE PLAATS VOOR AL JOUW VOETBALGEGEVENS</p>
-            
-            <div class="links-container">
-                <a href="{{ route('matches') }}" class="dashboard-btn">Ga naar Dashboard</a>
-            </div>
         </div>
     </div>
 </body>
