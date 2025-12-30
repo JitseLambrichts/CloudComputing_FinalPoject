@@ -21,4 +21,4 @@ In this view, you can see the player-statistics that are also retrieved from the
 This view shows the latest sport news from the Premier League (if news is available). This uses a third-party API called NewsAPI.
 
 ## Architecture
-![Architectuurdiagram](./storage/app/public/diagram.png)
+![Architectuurdiagram](./diagram.png)
