@@ -21,6 +21,4 @@ message AnalysisResponse {
 service AnalyticsService {
     // Stream zorgt voor Bidirectional Streaming --> uitbreiding
     rpc StreamPlayerAnalytics(stream LivePlayerUpdate) returns (stream AnalysisResponse); 
-
-    rpc AnalyzePlayer(LivePlayerUpdate) returns (AnalysisResponse);
 }

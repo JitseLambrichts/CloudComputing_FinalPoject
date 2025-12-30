@@ -65,23 +65,6 @@ func (s *server) StreamPlayerAnalytics(stream pb.AnalyticsService_StreamPlayerAn
 	}
 }
 
-// func (s *server) AnalyzePlayer(ctx context.Context, request *pb.LivePlayerUpdate) (*pb.AnalysisResponse, error) {
-// 	fatigue := calucalteFatigueLevel(request.CurrentHeartRate, request.CurrentLactate)
-// 	recommendation := "Speler hoeft niet te wisselen"
-// 	shouldSub := false
-
-// 	if fatigue >= 8 {
-// 		recommendation = "Speler moet gewisseld worden"
-// 		shouldSub = true;
-// 	}
-
-// 	return &pb.AnalysisResponse{
-// 		Recommendation: recommendation,
-// 		ShouldSubstitute: shouldSub,
-// 		FatigueLevel: int32(fatigue),
-// 	}, nil
-// }
-
 func calucalteFatigueLevel(heartRate int32, lactate float32) int32 {
     // Bereken fatigue: hartslag/25 + lactaat/3, met maximum van 10
     fatigue := int(heartRate/25) + int(lactate/3)

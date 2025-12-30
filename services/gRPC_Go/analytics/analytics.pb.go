@@ -191,10 +191,9 @@ const file_analytics_proto_rawDesc = "" +
 	"avgLactate\x18\x05 \x01(\x02R\n" +
 	"avgLactate\x12$\n" +
 	"\rtotalMessages\x18\x06 \x01(\x05R\rtotalMessages\x12&\n" +
-	"\x0eisFinalSummary\x18\a \x01(\bR\x0eisFinalSummary2\x8c\x01\n" +
+	"\x0eisFinalSummary\x18\a \x01(\bR\x0eisFinalSummary2U\n" +
 	"\x10AnalyticsService\x12A\n" +
-	"\x15StreamPlayerAnalytics\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponse(\x010\x01\x125\n" +
-	"\rAnalyzePlayer\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponseB\rZ\v./analyticsb\x06proto3"
+	"\x15StreamPlayerAnalytics\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponse(\x010\x01B\rZ\v./analyticsb\x06proto3"
 
 var (
 	file_analytics_proto_rawDescOnce sync.Once
@@ -215,11 +214,9 @@ var file_analytics_proto_goTypes = []any{
 }
 var file_analytics_proto_depIdxs = []int32{
 	0, // 0: AnalyticsService.StreamPlayerAnalytics:input_type -> LivePlayerUpdate
-	0, // 1: AnalyticsService.AnalyzePlayer:input_type -> LivePlayerUpdate
-	1, // 2: AnalyticsService.StreamPlayerAnalytics:output_type -> AnalysisResponse
-	1, // 3: AnalyticsService.AnalyzePlayer:output_type -> AnalysisResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	1, // 1: AnalyticsService.StreamPlayerAnalytics:output_type -> AnalysisResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

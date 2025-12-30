@@ -20,7 +20,6 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AnalyticsService_StreamPlayerAnalytics_FullMethodName = "/AnalyticsService/StreamPlayerAnalytics"
-	AnalyticsService_AnalyzePlayer_FullMethodName         = "/AnalyticsService/AnalyzePlayer"
 )
 
 // AnalyticsServiceClient is the client API for AnalyticsService service.
@@ -29,7 +28,6 @@ const (
 type AnalyticsServiceClient interface {
 	// Stream zorgt voor Bidirectional Streaming --> uitbreiding
 	StreamPlayerAnalytics(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[LivePlayerUpdate, AnalysisResponse], error)
-	AnalyzePlayer(ctx context.Context, in *LivePlayerUpdate, opts ...grpc.CallOption) (*AnalysisResponse, error)
 }
 
 type analyticsServiceClient struct {
@@ -53,23 +51,12 @@ func (c *analyticsServiceClient) StreamPlayerAnalytics(ctx context.Context, opts
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type AnalyticsService_StreamPlayerAnalyticsClient = grpc.BidiStreamingClient[LivePlayerUpdate, AnalysisResponse]
 
-func (c *analyticsServiceClient) AnalyzePlayer(ctx context.Context, in *LivePlayerUpdate, opts ...grpc.CallOption) (*AnalysisResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AnalysisResponse)
-	err := c.cc.Invoke(ctx, AnalyticsService_AnalyzePlayer_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // AnalyticsServiceServer is the server API for AnalyticsService service.
 // All implementations must embed UnimplementedAnalyticsServiceServer
 // for forward compatibility.
 type AnalyticsServiceServer interface {
 	// Stream zorgt voor Bidirectional Streaming --> uitbreiding
 	StreamPlayerAnalytics(grpc.BidiStreamingServer[LivePlayerUpdate, AnalysisResponse]) error
-	AnalyzePlayer(context.Context, *LivePlayerUpdate) (*AnalysisResponse, error)
 	mustEmbedUnimplementedAnalyticsServiceServer()
 }
 
@@ -82,9 +69,6 @@ type UnimplementedAnalyticsServiceServer struct{}
 
 func (UnimplementedAnalyticsServiceServer) StreamPlayerAnalytics(grpc.BidiStreamingServer[LivePlayerUpdate, AnalysisResponse]) error {
 	return status.Error(codes.Unimplemented, "method StreamPlayerAnalytics not implemented")
-}
-func (UnimplementedAnalyticsServiceServer) AnalyzePlayer(context.Context, *LivePlayerUpdate) (*AnalysisResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method AnalyzePlayer not implemented")
 }
 func (UnimplementedAnalyticsServiceServer) mustEmbedUnimplementedAnalyticsServiceServer() {}
 func (UnimplementedAnalyticsServiceServer) testEmbeddedByValue()                          {}
@@ -114,36 +98,13 @@ func _AnalyticsService_StreamPlayerAnalytics_Handler(srv interface{}, stream grp
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type AnalyticsService_StreamPlayerAnalyticsServer = grpc.BidiStreamingServer[LivePlayerUpdate, AnalysisResponse]
 
-func _AnalyticsService_AnalyzePlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LivePlayerUpdate)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AnalyticsServiceServer).AnalyzePlayer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: AnalyticsService_AnalyzePlayer_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AnalyticsServiceServer).AnalyzePlayer(ctx, req.(*LivePlayerUpdate))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // AnalyticsService_ServiceDesc is the grpc.ServiceDesc for AnalyticsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "AnalyticsService",
 	HandlerType: (*AnalyticsServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "AnalyzePlayer",
-			Handler:    _AnalyticsService_AnalyzePlayer_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "StreamPlayerAnalytics",
