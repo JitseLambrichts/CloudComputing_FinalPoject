@@ -25,7 +25,8 @@ import jakarta.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="teamName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="playerName" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="minutesToAdd" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,36 +37,54 @@ import jakarta.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "teamName"
+    "playerName",
+    "minutesToAdd"
 })
-@XmlRootElement(name = "getTeamStatsRequest")
-public class GetTeamStatsRequest {
+@XmlRootElement(name = "updatePlayerMinutesRequest")
+public class UpdatePlayerMinutesRequest {
 
     @XmlElement(required = true)
-    protected String teamName;
+    protected String playerName;
+    protected int minutesToAdd;
 
     /**
-     * Gets the value of the teamName property.
+     * Gets the value of the playerName property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getTeamName() {
-        return teamName;
+    public String getPlayerName() {
+        return playerName;
     }
 
     /**
-     * Sets the value of the teamName property.
+     * Sets the value of the playerName property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setTeamName(String value) {
-        this.teamName = value;
+    public void setPlayerName(String value) {
+        this.playerName = value;
+    }
+
+    /**
+     * Gets the value of the minutesToAdd property.
+     * 
+     */
+    public int getMinutesToAdd() {
+        return minutesToAdd;
+    }
+
+    /**
+     * Sets the value of the minutesToAdd property.
+     * 
+     */
+    public void setMinutesToAdd(int value) {
+        this.minutesToAdd = value;
     }
 
 }

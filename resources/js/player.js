@@ -113,6 +113,26 @@ ws.onmessage = function (event) {
         
         document.getElementById("liveDataText").innerHTML = html;
         updateStatus("no-data"); // Geen data meer verwacht
+
+        fetch('http://localhost:5001/graphiql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query: `mutation {
+                    addMinutesPlayed(playerName: "${playerName}", minutesToAdd: ${data.analysis.totalMessages}) {
+                        succes
+                        message
+                        newMinutesTotal
+                    }
+                }`
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            console.log("Speelminuten bijgewerkt: ", result);
+            alert(`${data.analysis.totalMessages} minuten toegeveogd aan ${playerName}`);
+        })
+        .catch(err => console.error('Fout bij updaten: ', err));
         return;
     }
 

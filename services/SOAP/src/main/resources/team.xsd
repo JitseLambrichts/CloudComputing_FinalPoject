@@ -55,5 +55,25 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="updatePlayerMinutesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="playerName" type="xs:string"/>
+                <xs:element name="minutesToAdd" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="updatePlayerMinutesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="succes" type="xs:boolean"/>
+                <xs:element name="message" type="xs:string"/>
+                <xs:element name="newMinutesTotal" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
 

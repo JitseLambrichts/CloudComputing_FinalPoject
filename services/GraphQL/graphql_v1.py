@@ -1,3 +1,4 @@
+from graphene.types.objecttype import ObjectType
 from graphene import *
 from flask import Flask, render_template, request
 from flask_graphql import GraphQLView
@@ -30,6 +31,11 @@ def get_team_stats_via_soap(team_name):
 def get_player_stats_via_soap(player_name):
     client = Client(SOAP_WSDL_URL)
     response = client.service.getPlayerStats(playerName=player_name)
+    return response
+
+def update_player_minutes_via_soap(player_name, minutes_to_add):
+    client = Client(SOAP_WSDL_URL)
+    response = client.service.updatePlayerMinutes(playerName=player_name, minutesToAdd=minutes_to_add)
     return response
 
 class Match(ObjectType):
@@ -243,6 +249,30 @@ def maakPlayer(row):
                 aantal_rode_kaarten = row['red_cards_overall']
     )
 
+class AddMinutesPlayed(Mutation):
+    """Mutation om speelminuten aan een speler toe te voegen voor MQTT simulaties"""
+
+    class Arguments:
+        player_name = String(required=True, description="Naam van de speler om de minuten aan te passen")
+        minutes_to_add = Int(default_value=90, description="Aantal minuten om toe te voegen")
+    
+    succes = Boolean()
+    message = String()
+    new_minutes_total = Int()
+
+    def mutate(root, info, player_name, minutes_to_add):
+        soap_response = update_player_minutes_via_soap(player_name, minutes_to_add)
+
+        return AddMinutesPlayed(
+            succes = soap_response.succes,
+            message = soap_response.message,
+            new_minutes_total = soap_response.newMinutesTotal
+        )
+
+class Mutation(ObjectType):
+    """Mutation voor schrijfoperaties"""
+    add_minutes_played = AddMinutesPlayed.Field(description="Voeg speelminuten toe aan een speler")
+
 
 class Query(ObjectType):
     """Root query voor alle beschikbare zoekopdrachten"""
@@ -251,17 +281,6 @@ class Query(ObjectType):
     team_matches = List(Match, team_name=Argument(String, required=True, description="Naam van het team"), limit=Argument(Int, description="Maximaal aantal resultaten"), offset=Argument(Int, default_value=0, description="Aantal over te slaan"), description="Alle wedstrijden van een specifiek team")
 
     def resolve_speler(parent, info, name):
-        # connection = get_db_connection()
-        # cursor = connection.cursor(dictionary=True)
-
-        # query = "SELECT * FROM players WHERE full_name = %s"
-
-        # cursor.execute(query, (name,))
-        # player_row = cursor.fetchone()
-        # cursor.close()
-        # connection.close()
-        # return maakPlayer(player_row)
-
         soap_response = get_player_stats_via_soap(name)
 
         if soap_response:
@@ -342,15 +361,12 @@ class Query(ObjectType):
         return [maakMatch(row) for row in matches_rows if row]
 
 
-schema = Schema(query=Query)
+
+schema = Schema(query=Query, mutation=Mutation)
 
 
 myWebApp = Flask("My App")
 CORS(myWebApp)
-
-# @myWebApp.route("/")
-# def hello_world():
-#     return render_template("index.html")
 
 @myWebApp.route("/api/matches")
 def api_matches():

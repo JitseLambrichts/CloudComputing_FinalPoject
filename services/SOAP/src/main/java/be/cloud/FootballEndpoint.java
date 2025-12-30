@@ -4,6 +4,8 @@ import be.cloud.team_statistics.GetTeamStatsRequest;
 import be.cloud.team_statistics.GetTeamStatsResponse;
 import be.cloud.team_statistics.GetPlayerStatsRequest;
 import be.cloud.team_statistics.GetPlayerStatsResponse;
+import be.cloud.team_statistics.UpdatePlayerMinutesRequest;
+import be.cloud.team_statistics.UpdatePlayerMinutesResponse;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -100,5 +102,46 @@ public class FootballEndpoint {
             return Period.between(birthday, LocalDate.now()).getYears();
         }
         return 0;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePlayerMinutesRequest")
+    @ResponsePayload
+    public UpdatePlayerMinutesResponse updatePlayerMinutesResponse(@RequestPayload UpdatePlayerMinutesRequest request) {
+        UpdatePlayerMinutesResponse response = new UpdatePlayerMinutesResponse();
+
+        String url = "jdbc:mysql://host.docker.internal:3306/finaletaakcloudcomputing";
+        String user = "root";
+        String password = "";
+
+        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            String update = "UPDATE players SET minutes_played_overall = minutes_played_overall + ? WHERE full_name = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(update);
+            updateStatement.setInt(1, request.getMinutesToAdd());
+            updateStatement.setString(2, request.getPlayerName());
+            int rowsAffected = updateStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                String query = "SELECT minutes_played_overall FROM players WHERE full_name = ?";
+                PreparedStatement queryStatement = connection.prepareStatement(query);
+                queryStatement.setString(1, request.getPlayerName());
+                ResultSet result = queryStatement.executeQuery();
+
+                if (result.next()) {
+                    response.setSucces(true);
+                    response.setMessage(request.getMinutesToAdd() + " minuten toegevoegd aan " + request.getPlayerName());
+                    response.setNewMinutesTotal(result.getInt("minutes_played_overall"));
+                }
+            } else {
+                response.setSucces(false);
+                response.setMessage("Speler niet gevonden: " + request.getPlayerName());
+                response.setNewMinutesTotal(0);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.setSucces(false);
+            response.setMessage("Error met de database: " + e.getMessage());
+            response.setNewMinutesTotal(0);
+        }
+        return response;
     }
 }
