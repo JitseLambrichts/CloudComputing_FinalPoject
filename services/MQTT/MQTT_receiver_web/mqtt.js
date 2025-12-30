@@ -16,6 +16,8 @@ const packageDefinition = protoLoader.loadSync('analytics.proto', {
 
 const analysticsProto = grpc.loadPackageDefinition(packageDefinition);
 const grpcClient = new analysticsProto.AnalyticsService('grpc-server:50051', grpc.credentials.createInsecure());
+const clientSteams = new Map();
+const lastMQTTData = new Map();
 
 const brokerAddress = config.brokerAddress;
 const brokerPort = config.brokerPort;
@@ -35,12 +37,48 @@ const client = mqtt.connect({
 const wss = new WebSocket.Server({ port:9292 });
 let activeConnections = 0;
 let messageCount = 0;
-const MAX_MESSAGES = 90; // Want 120 minuten in eem match -> dus na 120 punten stoppen
+const MAX_MESSAGES = 10; // Want 120 minuten in eem match -> dus na 120 punten stoppen
 
 wss.on('connection', function connection(ws) {
     console.log('Websocket client succesfully connected');
 
     let currentPlayerName = 'Unknown';
+
+    const grpcStream = grpcClient.StreamPlayerAnalytics();
+    clientSteams.set(ws, grpcStream);
+
+    grpcStream.on('data', (response) => {
+        console.log('gRPC Stream repsonse: ', response);
+
+        if (ws.readyState === WebSocket.OPEN) {
+            const MQTTData = lastMQTTData.get(ws) || {};
+
+            ws.send(JSON.stringify({
+                ...MQTTData,
+                type: response.isFinalSummary ? 'summary' : 'analysis',
+                analysis: {
+                    recommendation: response.recommendation,
+                    shouldSubstitute: response.shouldSubstitute,
+                    fatigueLevel: response.fatigueLevel,
+                    avgHeartRate: response.avgHeartRate,
+                    avgLactate: response.avgLactate,
+                    totalMessages: response.totalMessages
+                }
+            }));
+        }
+    });
+
+    grpcStream.on('error', (error) => {
+        if (error.details === 'EOF') {
+            console.log('gRPC Stream closed normally'); // Want geeft altijd deze error
+        } else {
+            console.error("gRPC Stream error: ", error);
+        }
+    })
+
+    grpcStream.on('end', () => {
+        console.log('gRPC Stream ended');
+    })
 
     // Luister naar berichten van de client (spelernaam)
     ws.on('message', function incoming(message) {
@@ -69,6 +107,12 @@ wss.on('connection', function connection(ws) {
     }
 
     ws.on('close', function() {
+        const stream = clientSteams.get(ws);
+        if (stream) {
+            stream.end();
+            clientSteams.delete(ws);
+        }
+
         activeConnections--;
         console.log(`Client disconnected. Active connections: ${activeConnections}`);
 
@@ -92,6 +136,13 @@ client.on('message', function (mqttTopic, message) {
         if (messageCount > MAX_MESSAGES) {
             console.log("Match fully simulated, now closing MQTT");
             client.unsubscribe(baseTopic);
+
+            wss.clients.forEach(function each(wsClient) {
+                const stream = clientSteams.get(wsClient);
+                if (stream) {
+                    stream.end();
+                }
+            })
             return;
         }
 
@@ -106,23 +157,11 @@ client.on('message', function (mqttTopic, message) {
 
         wss.clients.forEach(function each(wsClient) {
             if (wsClient.readyState === WebSocket.OPEN) {
-                grpcClient.AnalyzePlayer(grpcRequest, (error, response) => {
-                    if (error) {
-                        console.error("gRPC error: ", error);
-                        wsClient.send(JSON.stringify(data));
-                    } else {
-                        console.log("gRPC response: ", response);
-                        const enrichedData = {
-                            ...data,
-                            analysis: {
-                                recommendation: response.recommendation,
-                                shouldSubstitute: response.shouldSubstitute,
-                                fatigueLevel: response.fatigueLevel
-                            }
-                        };
-                        wsClient.send(JSON.stringify(enrichedData));
-                    } 
-                });
+                const stream = clientSteams.get(wsClient);
+                if (stream) {
+                    lastMQTTData.set(wsClient, data);
+                    stream.write(grpcRequest);
+                }
             }
         });
     }

@@ -12,6 +12,10 @@ message AnalysisResponse {
     string recommendation = 1;
     bool shouldSubstitute = 2;
     int32 fatigueLevel = 3;   // Hoe moe een speler is op een schaal van 10
+    float avgHeartRate = 4;
+    float avgLactate = 5;
+    int32 totalMessages = 6;
+    bool isFinalSummary = 7;
 }
 
 service AnalyticsService {

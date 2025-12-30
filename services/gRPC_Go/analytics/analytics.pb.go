@@ -86,6 +86,10 @@ type AnalysisResponse struct {
 	Recommendation   string                 `protobuf:"bytes,1,opt,name=recommendation,proto3" json:"recommendation,omitempty"`
 	ShouldSubstitute bool                   `protobuf:"varint,2,opt,name=shouldSubstitute,proto3" json:"shouldSubstitute,omitempty"`
 	FatigueLevel     int32                  `protobuf:"varint,3,opt,name=fatigueLevel,proto3" json:"fatigueLevel,omitempty"` // Hoe moe een speler is op een schaal van 10
+	AvgHeartRate     float32                `protobuf:"fixed32,4,opt,name=avgHeartRate,proto3" json:"avgHeartRate,omitempty"`
+	AvgLactate       float32                `protobuf:"fixed32,5,opt,name=avgLactate,proto3" json:"avgLactate,omitempty"`
+	TotalMessages    int32                  `protobuf:"varint,6,opt,name=totalMessages,proto3" json:"totalMessages,omitempty"`
+	IsFinalSummary   bool                   `protobuf:"varint,7,opt,name=isFinalSummary,proto3" json:"isFinalSummary,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -141,6 +145,34 @@ func (x *AnalysisResponse) GetFatigueLevel() int32 {
 	return 0
 }
 
+func (x *AnalysisResponse) GetAvgHeartRate() float32 {
+	if x != nil {
+		return x.AvgHeartRate
+	}
+	return 0
+}
+
+func (x *AnalysisResponse) GetAvgLactate() float32 {
+	if x != nil {
+		return x.AvgLactate
+	}
+	return 0
+}
+
+func (x *AnalysisResponse) GetTotalMessages() int32 {
+	if x != nil {
+		return x.TotalMessages
+	}
+	return 0
+}
+
+func (x *AnalysisResponse) GetIsFinalSummary() bool {
+	if x != nil {
+		return x.IsFinalSummary
+	}
+	return false
+}
+
 var File_analytics_proto protoreflect.FileDescriptor
 
 const file_analytics_proto_rawDesc = "" +
@@ -149,11 +181,17 @@ const file_analytics_proto_rawDesc = "" +
 	"\x10LivePlayerUpdate\x12*\n" +
 	"\x10currentHeartRate\x18\x01 \x01(\x05R\x10currentHeartRate\x12&\n" +
 	"\x0ecurrentLactate\x18\x02 \x01(\x02R\x0ecurrentLactate\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"\x8a\x01\n" +
+	"\ttimestamp\x18\x03 \x01(\x03R\ttimestamp\"\x9c\x02\n" +
 	"\x10AnalysisResponse\x12&\n" +
 	"\x0erecommendation\x18\x01 \x01(\tR\x0erecommendation\x12*\n" +
 	"\x10shouldSubstitute\x18\x02 \x01(\bR\x10shouldSubstitute\x12\"\n" +
-	"\ffatigueLevel\x18\x03 \x01(\x05R\ffatigueLevel2\x8c\x01\n" +
+	"\ffatigueLevel\x18\x03 \x01(\x05R\ffatigueLevel\x12\"\n" +
+	"\favgHeartRate\x18\x04 \x01(\x02R\favgHeartRate\x12\x1e\n" +
+	"\n" +
+	"avgLactate\x18\x05 \x01(\x02R\n" +
+	"avgLactate\x12$\n" +
+	"\rtotalMessages\x18\x06 \x01(\x05R\rtotalMessages\x12&\n" +
+	"\x0eisFinalSummary\x18\a \x01(\bR\x0eisFinalSummary2\x8c\x01\n" +
 	"\x10AnalyticsService\x12A\n" +
 	"\x15StreamPlayerAnalytics\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponse(\x010\x01\x125\n" +
 	"\rAnalyzePlayer\x12\x11.LivePlayerUpdate\x1a\x11.AnalysisResponseB\rZ\v./analyticsb\x06proto3"

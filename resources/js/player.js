@@ -105,37 +105,33 @@ ws.onmessage = function (event) {
 
     const data = JSON.parse(event.data);
 
+    if (data.type === 'summary') {
+        let html = "<h3>🏁 Match Simulatie Voltooid</h3>";
+        html += `<div class="stat-row"><p><strong>Totaal Berichten:</strong> ${data.analysis.totalMessages}</p></div>`;
+        html += `<div class="stat-row"><p><strong>Gem. Hartslag:</strong> ${data.analysis.avgHeartRate.toFixed(1)} bpm</p></div>`;
+        html += `<div class="stat-row"><p><strong>Gem. Lactaat:</strong> ${data.analysis.avgLactate.toFixed(2)} mmol/L</p></div>`;
+        html += `<div class="stat-row"><p><strong>Finale Aanbeveling:</strong> ${data.analysis.recommendation}</p></div>`;
+        
+        document.getElementById("liveDataText").innerHTML = html;
+        updateStatus("no-data"); // Geen data meer verwacht
+        return;
+    }
+
     // Voor front-end printing Copilot --> bronvermelding
     let html = "<h3>Live Prestatie Data</h3>";
-    html += `<div class="stat-row"><p><strong>Hartslag:</strong> ${parseFloat(
-        data.hartslag
-    ).toFixed(0)} bpm</p></div>`;
-    html += `<div class="stat-row"><p><strong>Lactaat:</strong> ${parseFloat(
-        data.lactaat_waardes
-    ).toFixed(1)} mmol/L</p></div>`;
-    html += `<div class="stat-row"><p><strong>Systolische Bloeddruk:</strong> ${parseFloat(
-        data.systolische_bloeddruk
-    ).toFixed(0)} mmHg</p></div>`;
-    html += `<div class="stat-row"><p><strong>Zuurstof Opname:</strong> ${parseFloat(
-        data.zuurstof_opname
-    ).toFixed(1)} ml/min</p></div>`;
-    html += `<div class="stat-row"><p><strong>Hartminuutvolume:</strong> ${parseFloat(
-        data.hartminuutvolume
-    ).toFixed(1)} L/min</p></div>`;
-    html += `<div class="stat-row"><p><strong>Maximale Belasting:</strong> ${parseFloat(
-        data.maximale_belasting
-    ).toFixed(0)} W</p></div>`;
-    html += `<div class="stat-row"><p><strong>Anaerobe Drempel:</strong> ${parseFloat(
-        data.anaerobe_drempel
-    ).toFixed(0)} ml/min</p></div>`;
-
+    html += `<div class="stat-row"><p><strong>Hartslag:</strong> ${parseFloat(data.hartslag).toFixed(0)} bpm</p></div>`;
+    html += `<div class="stat-row"><p><strong>Lactaat:</strong> ${parseFloat(data.lactaat_waardes).toFixed(1)} mmol/L</p></div>`;
+    html += `<div class="stat-row"><p><strong>Systolische Bloeddruk:</strong> ${parseFloat(data.systolische_bloeddruk).toFixed(0)} mmHg</p></div>`;
+    html += `<div class="stat-row"><p><strong>Zuurstof Opname:</strong> ${parseFloat(data.zuurstof_opname).toFixed(1)} ml/min</p></div>`;
+    html += `<div class="stat-row"><p><strong>Hartminuutvolume:</strong> ${parseFloat(data.hartminuutvolume).toFixed(1)} L/min</p></div>`;
+    html += `<div class="stat-row"><p><strong>Maximale Belasting:</strong> ${parseFloat(data.maximale_belasting).toFixed(0)} W</p></div>`;
+    html += `<div class="stat-row"><p><strong>Anaerobe Drempel:</strong> ${parseFloat(data.anaerobe_drempel).toFixed(0)} ml/min</p></div>`;
     if (data.analysis) {
         html += "<h3>Analyse (via gRPC)</h3>";
         html += `<div class="stat-row"><p><strong>Aanbeveling:</strong> ${data.analysis.recommendation}</p></div>`;
         html += `<div class="stat-row"><p><strong>Vermoeidheid:</strong> ${data.analysis.fatigueLevel}/10</p></div>`;
-        html += `<div class="stat-row"><p><strong>Wisselen:</strong> ${
-            data.analysis.shouldSubstitute ? "JA ⚠️" : "Nee ✅"
-        }</p></div>`;
+        html += `<div class="stat-row"><p><strong>Wisselen:</strong> ${data.analysis.shouldSubstitute ? "JA ⚠️" : "Nee ✅"}</p></div>`;
+        html += `<div class="stat-row"><p><strong>Gemiddelde hartslag:</strong> ${data.analysis.avgHeartRate}</p></div>`;
     }
 
     document.getElementById("liveDataText").innerHTML = html;

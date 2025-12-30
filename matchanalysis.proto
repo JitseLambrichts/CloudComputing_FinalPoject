@@ -12,11 +12,14 @@ message LivePlayerUpdate {
 }
 
 message AnalysisResponse {
-    string playerName = 1;
-    string recommendation = 2;
-    bool shouldSubstitute = 3;
-    int32 fatigueLevel = 4;   // Hoe moe een speler is op een schaal van 10
-}   
+    string recommendation = 1;
+    bool shouldSubstitute = 2;
+    int32 fatigueLevel = 3;   // Hoe moe een speler is op een schaal van 10
+    float avgHeartRate = 4;
+    float avgLactate = 5;
+    int32 totalMessages = 6;
+    bool isFinalSummary = 7;
+}
 
 service AnalyticsService {
     // Stream zorgt voor Bidirectional Streaming --> uitbreiding
