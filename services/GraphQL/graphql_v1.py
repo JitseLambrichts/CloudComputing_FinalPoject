@@ -8,12 +8,18 @@ import json
 from flask_cors import CORS
 import mysql.connector
 import os
+from dotenv import load_dotenv
 from zeep import Client
+
+load_dotenv()
+
+DATABASE_USER = os.getenv("DATABASE_USER")
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 DB_CONFIG = {
     'host': 'host.docker.internal',
-    'user': 'root',
-    'password': '',
+    'user': DATABASE_USER,
+    'password': DATABASE_PASSWORD,
     'database': 'finaletaakcloudcomputing',
     'port': 3306
 }

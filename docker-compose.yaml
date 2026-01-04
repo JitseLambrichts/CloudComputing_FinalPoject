@@ -47,6 +47,8 @@ services:
       - "5001:5001"
     networks:
       - app-network
+    env_file:
+      - .env
 
   mqtt_receiver_web:
     build:
