@@ -21,15 +21,18 @@ public class FootballEndpoint {
     // Dit MOET exact hetzelfde zijn als in je .xsd 
     private static final String NAMESPACE_URI = "http://be/cloud/team_statistics";
 
+    private static final String DATABASE_URL = System.getenv("DATABASE_URL");
+    private static final String DATABASE_USER = System.getenv("DATABASE_USER");
+    private static final String DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD");
+
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getTeamStatsRequest")
     @ResponsePayload
     public GetTeamStatsResponse getTeamStats(@RequestPayload GetTeamStatsRequest request) {
         GetTeamStatsResponse response = new GetTeamStatsResponse();
         
-        // Verbinding met je Docker-database 
-        String url = "jdbc:mysql://host.docker.internal:3306/finaletaakcloudcomputing";
-        String user = "root";
-        String password = "";
+        String url = DATABASE_URL;
+        String user = DATABASE_USER;
+        String password = DATABASE_PASSWORD;
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
             // Zoek het team op basis van de common_name uit je migratie 
@@ -65,9 +68,9 @@ public class FootballEndpoint {
     public GetPlayerStatsResponse getPlayerStats(@RequestPayload GetPlayerStatsRequest request) {
         GetPlayerStatsResponse response = new GetPlayerStatsResponse();
 
-        String url = "jdbc:mysql://host.docker.internal:3306/finaletaakcloudcomputing";
-        String user = "root";
-        String password = "";
+        String url = DATABASE_URL;
+        String user = DATABASE_USER;
+        String password = DATABASE_PASSWORD;
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
             String query = "SELECT * FROM players WHERE full_name = ?";
@@ -109,9 +112,9 @@ public class FootballEndpoint {
     public UpdatePlayerMinutesResponse updatePlayerMinutesResponse(@RequestPayload UpdatePlayerMinutesRequest request) {
         UpdatePlayerMinutesResponse response = new UpdatePlayerMinutesResponse();
 
-        String url = "jdbc:mysql://host.docker.internal:3306/finaletaakcloudcomputing";
-        String user = "root";
-        String password = "";
+        String url = DATABASE_URL;
+        String user = DATABASE_USER;
+        String password = DATABASE_PASSWORD;
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
             String update = "UPDATE players SET minutes_played_overall = minutes_played_overall + ? WHERE full_name = ?";
