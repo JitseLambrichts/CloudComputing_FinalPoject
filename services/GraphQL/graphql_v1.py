@@ -13,6 +13,7 @@ from zeep import Client
 
 load_dotenv()
 
+# Dit is om de credentials niet in plain text in de code te hebben staan -> bronvemelding Copilot
 DATABASE_USER = os.getenv("DATABASE_USER")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
@@ -24,11 +25,13 @@ DB_CONFIG = {
     'port': 3306
 }
 
+# SOAP WSDL definieren aangezien SOAP de data uit de database gaat halen
 SOAP_WSDL_URL = "http://soap-service:8080/ws/football.wsdl"
 
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
 
+# SOAP-services om de verschillende data uit de database te halen
 def get_team_stats_via_soap(team_name):
     client = Client(SOAP_WSDL_URL)
     response = client.service.getTeamStats(teamName=team_name)
@@ -44,6 +47,26 @@ def update_player_minutes_via_soap(player_name, minutes_to_add):
     response = client.service.updatePlayerMinutes(playerName=player_name, minutesToAdd=minutes_to_add)
     return response
 
+# Deze functie zal de tijden van de wedstrijden naar strings die gebruikt kunnen worden in de HTML
+# Hulp van Copilot (-->bronvermelding)
+def formatTijdstippen(string):
+    """Zet tijdstippen om naar 2-cijferige getallen"""
+    if not string or string == "":
+        return []
+
+    tijdstippen = []
+    for tijd in str(string).split(","):
+        tijd = tijd.strip()
+        if tijd and tijd != "":
+            try:
+                minuut = int(tijd)
+                tijdstippen.append(f"{minuut:02d}")
+            except ValueError:
+                tijdstippen.append(tijd)
+    return tijdstippen
+
+
+# Definiëring van de verschillende objecten
 class Match(ObjectType):
     """Een voetbalwedstrijd tussen twee teams"""
     datum = Field(String, required=True, description="Datum van de wedstrijd (GMT)")
@@ -51,7 +74,6 @@ class Match(ObjectType):
     uitploeg = Field(lambda: Team, required=True, description="Het uitspelende team")
     scheidsrechter = Field(String, required=True, description="Naam van de scheidsrechter")
     score = Field(lambda: Score, required=True, description="Eindstand en statistieken")
-    winnaar = Field(lambda: Team, description="Het winnende team (None bij gelijkspel)")           
     aantal_bezoekers = Field(Int, description="Aantal toeschouwers")
     stadion = Field(String, required=True, description="Naam van het stadion")
     thuisploeg_hoekschoppen = Field(Int, description="Aantal hoekschoppen thuisploeg")
@@ -78,10 +100,6 @@ class Score(ObjectType):
     """Scoreinformatie van een wedstrijd"""
     thuisploeg_doelpunten = Field(Int, required=True, description="Doelpunten thuisteam")
     uitploeg_doelpunten = Field(Int, required=True, description="Doelpunten uitteam")
-    thuisploeg_tijdstippen_doelpunten = Field(List(String), description="Minuten van doelpunten thuisteam")
-    uitploeg_tijdstippen_doelpunten = Field(List(String), description="Minuten van doelpunten uitteam")
-    thuisploeg_verwachte_doelpunten = Field(Float, description="Expected Goals (xG) thuisteam")
-    uitploeg_verwachte_doelpunten = Field(Float, description="Expected Goals (xG) uitteam")
 
 class Team(ObjectType):
     """Een voetbalteam met statistieken"""
@@ -101,7 +119,7 @@ class Team(ObjectType):
     doelpunten_tegen = Field(Int, description="Totaal aantal tegen doelpunten")
     spelers = Field(List(lambda: Player), description="Lijst van spelers in het team")
 
-    # De speler van de teams aanmaken
+    # De spelers van de teams aanmaken
     def resolve_spelers(parent, info):
         connection = get_db_connection()
         cursor = connection.cursor(dictionary=True)
@@ -140,23 +158,8 @@ class Player(ObjectType):
     aantal_gele_kaarten = Field(Int, description="Totaal aantal gele kaarten")
     aantal_rode_kaarten = Field(Int, description="Totaal aantal rode kaarten")
 
-# Hulp van Copilot (-->bronvermelding)
-def formatTijdstippen(string):
-    """Zet tijdstippen om naar 2-cijferige getallen"""
-    if not string or string == "":
-        return []
 
-    tijdstippen = []
-    for tijd in str(string).split(","):
-        tijd = tijd.strip()
-        if tijd and tijd != "":
-            try:
-                minuut = int(tijd)
-                tijdstippen.append(f"{minuut:02d}")
-            except ValueError:
-                tijdstippen.append(tijd)
-    return tijdstippen
-
+# Haalt een Team object op aan de hand van het team ID uit de database
 def get_team_by_id(team_id):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
@@ -172,6 +175,8 @@ def get_team_by_id(team_id):
 
     return None
 
+
+# De verschillende "makers" voor de verschillende objecten
 def maakMatch(row):
     if not row : return None
     return Match(
@@ -180,7 +185,6 @@ def maakMatch(row):
         uitploeg = get_team_by_id(row['away_team_id']),
         scheidsrechter = row['referee'],
         score = maakScore(row),
-        winnaar = maakWinnaar(row),
         aantal_bezoekers = row['attendance'],
         stadion = row['stadium_name'],
         thuisploeg_hoekschoppen = row.get('home_team_corner_count'),
@@ -209,15 +213,6 @@ def maakScore(row):
             thuisploeg_doelpunten = row['home_team_goal_count'],
             uitploeg_doelpunten = row['away_team_goal_count'],
     )
-
-def maakWinnaar(row):
-    if row['home_team_goal_count'] > row['away_team_goal_count']:
-        return get_team_by_id(row['home_team_id'])
-    elif row['away_team_goal_count'] > row['home_team_goal_count']:
-        return get_team_by_id(row['away_team_id'])
-    else:
-        return None
-
 
 def maakTeam(row):
     if not row : return None
@@ -255,6 +250,7 @@ def maakPlayer(row):
                 aantal_rode_kaarten = row['red_cards_overall']
     )
 
+
 class AddMinutesPlayed(Mutation):
     """Mutation om speelminuten aan een speler toe te voegen voor MQTT simulaties"""
 
@@ -266,6 +262,7 @@ class AddMinutesPlayed(Mutation):
     message = String()
     new_minutes_total = Int()
 
+    # Database updaten via SOAP-service (want spelersstatistieken zijn allemaal via SOAP)
     def mutate(root, info, player_name, minutes_to_add):
         soap_response = update_player_minutes_via_soap(player_name, minutes_to_add)
 
@@ -304,23 +301,8 @@ class Query(ObjectType):
                 aantal_rode_kaarten=soap_response.red_cards_overall
             )
         return None
-            
-            
-    def resolve_spelers(parent, info):
-        connection = get_db_connection()
-        cursor = connection.cursor(dictionary=True)
 
-        query = "SELECT * FROM players WHERE 'Current club' = %s"
 
-        cursor.execute(query, (parent.naam,))
-        player_rows = cursor.fetchall()
-
-        return [Player(
-            naam=r['full_name'],
-            leeftijd=r['age'],
-            positie=r['position'],
-        ) for r in player_rows]
-    
     def resolve_team(parent, info, name):
         soap_response = get_team_stats_via_soap(name)
 
@@ -342,6 +324,22 @@ class Query(ObjectType):
                 doelpunten_tegen=soap_response.goals_conceded,
             )
         return None
+            
+
+    def resolve_spelers(parent, info):
+        connection = get_db_connection()
+        cursor = connection.cursor(dictionary=True)
+
+        query = "SELECT * FROM players WHERE 'Current club' = %s"
+
+        cursor.execute(query, (parent.naam,))
+        player_rows = cursor.fetchall()
+
+        return [Player(
+            naam=r['full_name'],
+            leeftijd=r['age'],
+            positie=r['position'],
+        ) for r in player_rows]
     
     
     def resolve_team_matches(parent, info, team_name, limit=None, offset=0):
@@ -357,6 +355,7 @@ class Query(ObjectType):
             connection.close()
             return []
         
+        # Op basis van de team_id de matches zoeken
         team_id = team['id']
         query = "SELECT * FROM matches WHERE home_team_id = %s OR away_team_id = %s LIMIT %s OFFSET %s"
         cursor.execute(query, (team_id, team_id, limit or 100, offset))
@@ -367,20 +366,18 @@ class Query(ObjectType):
         return [maakMatch(row) for row in matches_rows if row]
 
 
-
 schema = Schema(query=Query, mutation=Mutation)
-
 
 myWebApp = Flask("My App")
 CORS(myWebApp)
 
+
+# Verschillende end-points met de queries
 @myWebApp.route("/api/matches")
 def api_matches():
     team = request.args.get('team', None) 
     
     if team:
-        # Hier al een query ingeven om deze te verwerken
-        # Zowel zoeken op de matches een team als de statistieken van een team
         query_string = f"""
         {{
             team(name: "{team}") {{
