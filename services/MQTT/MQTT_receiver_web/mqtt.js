@@ -14,8 +14,8 @@ const packageDefinition = protoLoader.loadSync('analytics.proto', {
     oneofs: true
 });
 
-const analysticsProto = grpc.loadPackageDefinition(packageDefinition);
-const grpcClient = new analysticsProto.AnalyticsService('grpc-server:50051', grpc.credentials.createInsecure());
+const analyticsProto = grpc.loadPackageDefinition(packageDefinition);
+const grpcClient = new analyticsProto.AnalyticsService('grpc-server:50051', grpc.credentials.createInsecure());
 const clientSteams = new Map();
 const lastMQTTData = new Map();
 
@@ -37,7 +37,7 @@ const client = mqtt.connect({
 const wss = new WebSocket.Server({ port:9292 });
 let activeConnections = 0;
 let messageCount = 0;
-const MAX_MESSAGES = 90; // Want 120 minuten in eem match -> dus na 120 punten stoppen
+const MAX_MESSAGES = 90; // Want 90 minuten in eem match -> dus na 90 punten stoppen
 
 wss.on('connection', function connection(ws) {
     console.log('Websocket client succesfully connected');

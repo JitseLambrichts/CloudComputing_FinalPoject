@@ -25,4 +25,7 @@ Route::get('/api/proxy/graphql-player', function (Request $request) {
     return $response->json();
 });
 
-Route::get('/news', [NewsController::class, 'index'])->name('news');
+// Middleware bronvermelding Copilot
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news')
+    ->middleware('throttle:10.1');

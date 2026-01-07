@@ -3,7 +3,7 @@ const playerName = urlParams.get("player") || "Unknown";
 
 document.getElementById("title").innerText = `Monitoring: ${playerName}`;
 
-const ws = new WebSocket("ws://localhost:9292"); // WebSocket server address
+const ws = new WebSocket("ws://127.0.0.1:9292"); // WebSocket server address
 
 async function loadPlayer() {
     try {
