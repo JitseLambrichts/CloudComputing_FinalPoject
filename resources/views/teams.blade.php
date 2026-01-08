@@ -72,6 +72,10 @@
                     `;
 
                     document.getElementById('teaminfocontainer').innerHTML = teamInfoHtml;
+                } else {
+                    document.getElementById('matches-container').innerHTML = 
+                        '<div class="error">Team niet gevonden.</div>';
+                    return;
                 }
 
                 // Toon de wedstrijden

@@ -34,3 +34,5 @@ Deze weergave toont het laatste sportnieuws uit de Premier League (indien beschi
 
 ## Bronvermelding
 - Icoontje voor Teams-pagina: https://www.svgrepo.com/svg/29464/football-list-and-field-outline
+- Icoontje voor Home-pagina: https://www.svgrepo.com/svg/524060/home
+- Icoontje voor News-pagina: https://www.svgrepo.com/svg/476435/news-paper
