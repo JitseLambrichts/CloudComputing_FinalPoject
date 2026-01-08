@@ -1,19 +1,21 @@
+/*
+    Deze file regelt de update van de view van de speler gebaseerd op de data ontvangen van MQTT en gRPC
+*/
+
 const urlParams = new URLSearchParams(window.location.search);
 const playerName = urlParams.get("player") || "Unknown";
 
 document.getElementById("title").innerText = `Monitoring: ${playerName}`;
 
-const ws = new WebSocket("ws://127.0.0.1:9292"); // WebSocket server address
+const ws = new WebSocket("ws://127.0.0.1:9292");
 
 async function loadPlayer() {
     try {
-        const baseUrl = "http://127.0.0.1:5001";
-        const url = `/api/proxy/graphql-player?player=${encodeURIComponent(
-            playerName
-        )}`;
+        const url = `/api/proxy/graphql-player?player=${encodeURIComponent(playerName)}`;
 
         const response = await fetch(url);
         const data = await response.json();
+        // Data van de speler inladen
         if (data.player) {
             const playerInfoHtml = `
                 <div class="stat-item">
@@ -54,6 +56,7 @@ async function loadPlayer() {
                 </div>
             `;
 
+            // HTML daadwerkelijk bijwerken
             document.getElementById("playerStats").innerHTML = playerInfoHtml;
         }
     } catch (error) {
@@ -63,10 +66,11 @@ async function loadPlayer() {
 
 loadPlayer();
 
-// Status Indicator Logic
+// Status Indicator Logic --> bronvermelding Copilot
 const statusBadge = document.getElementById("connectionStatus");
 let dataWatchdog;
 
+// Statusbatch updaten
 function updateStatus(state) {
     if (!statusBadge) return;
 
@@ -94,11 +98,10 @@ ws.onopen = function () {
 };
 
 ws.onmessage = function (event) {
-    // Reset watchdog on every message
     clearTimeout(dataWatchdog);
     updateStatus("connected");
 
-    // Set watchdog: if no data for 3 seconds, show warning
+    // Als er na 3 seconden geen data meer binnenkomt -> dan geen data-flow meer
     dataWatchdog = setTimeout(() => {
         updateStatus("no-data");
     }, 3000);
@@ -106,14 +109,16 @@ ws.onmessage = function (event) {
     const data = JSON.parse(event.data);
 
     if (data.type === 'summary') {
+        // Data van de gRPC
         let html = "<h3>Match Simulatie Voltooid</h3>";
         html += `<div class="stat-row"><p><strong>Gem. Hartslag:</strong> ${data.analysis.avgHeartRate.toFixed(1)} bpm</p></div>`;
         html += `<div class="stat-row"><p><strong>Gem. Lactaat:</strong> ${data.analysis.avgLactate.toFixed(2)} mmol/L</p></div>`;
         html += `<div class="stat-row"><p><strong>Match:</strong> ${data.analysis.recommendation}</p></div>`;
         
         document.getElementById("liveDataText").innerHTML = html;
-        updateStatus("no-data"); // Geen data meer verwacht
+        updateStatus("no-data");
 
+        // Mutation voor de spelersminuten te updaten
         fetch('http://localhost:5001/graphiql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
