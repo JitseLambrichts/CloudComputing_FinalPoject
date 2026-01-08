@@ -20,8 +20,8 @@
             </form>
             <br>
             <br>
-            <div id="teaminfocontainer"></div>      <!-- Container voor de team-informatie -->
-            <div id="matches-container" class="matches-grid"></div>   <!-- Container voor de matches-containers -->
+            <div id="teaminfocontainer"></div>                              <!-- Container voor de team-informatie -->
+            <div id="matches-container" class="matches-grid"></div>         <!-- Container voor de matches-containers -->
             <br>
             <br>
         </div>
@@ -32,8 +32,6 @@
             const teamName = document.getElementById("team").value;
 
             try {
-                // Zorg dat deze poort (5001) overeenkomt met je docker-compose configuratie
-                const baseUrl = "http://127.0.0.1:5001"; 
                 const url = teamName ? `/api/proxy/graphql-matches?team=${encodeURIComponent(teamName)}` : `/api/proxy/graphql-matches`;
 
                 const response = await fetch(url);
