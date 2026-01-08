@@ -1,3 +1,7 @@
+# Deze file is verantwoordelijk voor de volledige GrahpQL implementatie van dit project
+# Voor verdere documentatie zie de README
+
+
 from graphene.types.objecttype import ObjectType
 from graphene import *
 from flask import Flask, render_template, request
