@@ -2,12 +2,14 @@ syntax = "proto3";
 
 option go_package = "./analytics";
 
+// Data die ontvangen wordt van de MQTT
 message LivePlayerUpdate {
     int32 currentHeartRate = 1;
     float currentLactate = 2;
     int64 timestamp = 3;
 }
 
+// Reponse van de gRPC
 message AnalysisResponse {
     string recommendation = 1;      // String op basis van de shouldSubstitute (kan zeggen of deze gewisseld moet worden of niet)
     bool shouldSubstitute = 2;      // Een boolean op basis van de vermoeidheid (fatigueLevel) die true is als de speler te vermoeid is (fatigueLevel > 8)

@@ -2,20 +2,22 @@ syntax = "proto3";
 
 option go_package = "./analytics";
 
+// Data die ontvangen wordt van de MQTT
 message LivePlayerUpdate {
     int32 currentHeartRate = 1;
     float currentLactate = 2;
     int64 timestamp = 3;
 }
 
+// Reponse van de gRPC
 message AnalysisResponse {
-    string recommendation = 1;
-    bool shouldSubstitute = 2;
-    int32 fatigueLevel = 3;   // Hoe moe een speler is op een schaal van 10
-    float avgHeartRate = 4;
-    float avgLactate = 5;
-    int32 totalMessages = 6;
-    bool isFinalSummary = 7;
+    string recommendation = 1;      // String op basis van de shouldSubstitute (kan zeggen of deze gewisseld moet worden of niet)
+    bool shouldSubstitute = 2;      // Een boolean op basis van de vermoeidheid (fatigueLevel) die true is als de speler te vermoeid is (fatigueLevel > 8)
+    int32 fatigueLevel = 3;         // Hoe moe een speler is op een schaal 0 van 10
+    float avgHeartRate = 4;         // De gemiddelde hartslag
+    float avgLactate = 5;           // De gemiddelde lactaat-waardes
+    int32 totalMessages = 6;        // Het totaal aantal ontvangen messages (voor informatie/debugging).
+    bool isFinalSummary = 7;        // Deze boolean wordt gebruikt om aan te duiden of dit de laatste analyse is. Als dit zo is, dan kan de UI hierop aangepast worden
 }
 
 service AnalyticsService {
