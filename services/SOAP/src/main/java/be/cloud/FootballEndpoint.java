@@ -1,3 +1,6 @@
+// Dit is de SOAP service
+// Deze zal de data uit de database gaan halen en deze ter beschikking stellen voor de GraphQL
+
 package be.cloud;
 
 import be.cloud.team_statistics.GetTeamStatsRequest;
@@ -18,9 +21,10 @@ import java.time.format.DateTimeFormatter;
 
 @Endpoint
 public class FootballEndpoint {
-    // Dit MOET exact hetzelfde zijn als in je .xsd 
     private static final String NAMESPACE_URI = "http://be/cloud/team_statistics";
 
+    // Deze worden uit de .env gehaal voor extra 'veiligheid'
+    // Pas deze nog aan naar eigen implementatie (in de .env)
     private static final String DATABASE_URL = System.getenv("DATABASE_URL");
     private static final String DATABASE_USER = System.getenv("DATABASE_USER");
     private static final String DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD");
@@ -35,7 +39,6 @@ public class FootballEndpoint {
         String password = DATABASE_PASSWORD;
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            // Zoek het team op basis van de common_name uit je migratie 
             String sql = "SELECT * FROM teams WHERE common_name = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, request.getTeamName());
@@ -99,6 +102,7 @@ public class FootballEndpoint {
         return response;
     }
 
+    // Helper functie om de leeftijd te berekenen voor de speler
     private int calculateAge(String birthdayString) {
         if (birthdayString != null && !birthdayString.isEmpty()) {
             LocalDate birthday = LocalDate.parse(birthdayString, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -107,6 +111,8 @@ public class FootballEndpoint {
         return 0;
     }
 
+    // Nodig voor de mutation van de GraphQL
+    // Deze functie zal minuten bijtellen bij de speler waarvan een simulatie is gedaan
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "updatePlayerMinutesRequest")
     @ResponsePayload
     public UpdatePlayerMinutesResponse updatePlayerMinutesResponse(@RequestPayload UpdatePlayerMinutesRequest request) {
