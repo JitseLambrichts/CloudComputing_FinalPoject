@@ -21,9 +21,9 @@ public class FootballEndpoint {
     // Dit MOET exact hetzelfde zijn als in je .xsd 
     private static final String NAMESPACE_URI = "http://be/cloud/team_statistics";
 
-    private static final String DATABASE_URL = System.getenv("DB_URL");
-    private static final String DATABASE_USER = System.getenv("DB_USERNAME");
-    private static final String DATABASE_PASSWORD = System.getenv("DB_PASSWORD");
+    private static final String DATABASE_URL = System.getenv("DATABASE_URL");
+    private static final String DATABASE_USER = System.getenv("DATABASE_USER");
+    private static final String DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD");
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getTeamStatsRequest")
     @ResponsePayload
