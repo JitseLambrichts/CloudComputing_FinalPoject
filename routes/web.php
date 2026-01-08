@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
-use App\Http\Controllers\GrpcController;
 use App\Http\Controllers\NewsController;
 
 Route::get('/', function () {
