@@ -31,3 +31,6 @@ Deze weergave toont het laatste sportnieuws uit de Premier League (indien beschi
 
 ## Architecture
 ![Architectuurdiagram](./diagram.png)
+
+## Bronvermelding
+- Icoontje voor Teams-pagina: https://www.svgrepo.com/svg/29464/football-list-and-field-outline
