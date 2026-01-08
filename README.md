@@ -1,24 +1,33 @@
 # Project Cloud Computing: Football manager
 
-This project simulates a football manager. You can search for teams, see player performances (simulated) and read the latest football news.
+Dit project simuleert een voetbalmanager. Je kunt zoeken naar teams, de prestaties van spelers bekijken (gesimuleerd) en het laatste nieuws van de Premier League lezen.
+Voor meer specifieke documentatie, zie de README's in de betreffende mappen.
 
 ## Services
-- SOAP: retrieves data from database for GraphQL
-- GraphQL: query the matches, team- and player-statistics
-- MQTT: simulate the performance of a player
-- gRPC: analyzes this performance
-- WebSockets: used to easily access MQTT and gRPC data
+- SOAP (Java): haalt gegevens op uit de database voor GraphQL
+- GraphQL (Python): query voor de teams, matches en spelers
+- MQTT (JavaScript): de prestaties van een speler simuleren
+- gRPC (Go): deze prestatie analyseren
+- WebSockets (JavaScript, behoort tot MQTT-file): zorgt ervoor dat de gegevens naar de browser verzonden worden
 
-## The different views:
+## De verschillende views:
 ### Team view
-In this view, you can search for a Premier League team. This will return the statistics of this team for the 2018-2019 season.
-The team-statistics are retrieved from the GraphQL services that uses SOAP to get the data from the database. The matches are retrieved directly from the database to avoid latency. If you expand the player-widget, you can see all the players for this team. Here, you can navigate to the player view.
+In deze weergave kan er gezocht worden naar een Premier League-team. Hiermee worden de statistieken van dit team voor het seizoen 2018-2019 weergegeven.De teamstatistieken worden opgehaald uit de GraphQL-services die SOAP gebruikt om de gegevens uit de database te halen. De matches worden wel direct uit de database gehaald om overhead te vermijden. Als je de spelerswidget 'uitvouwt', kun je alle spelers van dit team zien. Hier kun je naar de spelersweergave navigeren.
 
 ### Player view
-In this view, you can see the player-statistics that are also retrieved from the database using the GraphQL-SOAP pipeline. The player-data are used to simulate the performance of players during a match. This is done by MQTT. The player-analytics are based on this data from the MQTT. This data is analyzed by gRPC. The charts are built by the library of chart.js. The data from MQTT and gRPC is published on a WebSocket so the data flow is easily accessible.
+In deze weergave worden de spelersstatistieken getoond die ook uit de database worden opgehaald met behulp van de GraphQL-SOAP pipeline. De spelers-data wordt gebruikt om de prestaties van spelers tijdens een wedstrijd te simuleren. Dit wordt gedaan door MQTT. De spelersanalyses zijn gebaseerd op deze gegevens uit de MQTT. Deze gegevens worden geanalyseerd door gRPC. De grafieken zijn gemaakt met behulp van de bibliotheek van Chart.js. De gegevens van MQTT en gRPC worden gepubliceerd op een WebSocket, zodat de gegevensstroom gemakkelijk toegankelijk is voor de browser.
 
 ### News view
-This view shows the latest sport news from the Premier League (if news is available). This uses a third-party API called NewsAPI.
+Deze weergave toont het laatste sportnieuws uit de Premier League (indien beschikbaar). Hiervoor wordt gebruikgemaakt van een third-party API, genaamd NewsAPI.
+
+## Endpoints
+- Laravel (Web): `http://localhost:8000`
+- SOAP: `http://localhost:8001/ws`
+- GraphQL: `http://localhost:5001`
+- MQTT: HiveMQ
+- gRPC: `localhost:50051`
+- WebSockets: `ws://localhost:9292`
+- Chart: `http://localhost:3000`
 
 ## Architecture
 ![Architectuurdiagram](./diagram.png)
