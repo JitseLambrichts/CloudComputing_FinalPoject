@@ -118,7 +118,7 @@ ws.onmessage = function (event) {
         document.getElementById("liveDataText").innerHTML = html;
         updateStatus("no-data");
 
-        // Mutation voor de spelersminuten te updaten
+        // Mutation voor de spelersminuten te updaten --> hulp Copilot (bronvermelding)
         fetch('http://localhost:5001/graphiql', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
