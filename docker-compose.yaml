@@ -25,7 +25,7 @@ services:
       - GRPC_PORT=50051
     depends_on:
       - grpc-server
-      # - soap-service # Uncomment als je deze service ook gebruikt
+      - soap-service
     networks:
       - app-network
 
@@ -58,7 +58,7 @@ services:
     ports:
       - "9292:9292"  # Expose de WebSocket poort naar de host
     depends_on:
-      - grpc-server  # TOEVOEGEN: wacht op gRPC server
+      - grpc-server  # Wacht op gRPC server
     networks:
       - app-network
 

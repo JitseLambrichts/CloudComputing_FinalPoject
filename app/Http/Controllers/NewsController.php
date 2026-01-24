@@ -14,7 +14,7 @@ class NewsController extends Controller
         $articles = Cache::remember('sports_news', 3600, function() {
             $response = Http::get('https://newsapi.org/v2/top-headlines', [
                 'category' => 'sports',
-                // 'q' => 'Premier League',
+                'q' => 'Premier League',
                 'apiKey' => env('NEWS_API_KEY')
             ]);
             if ($response->successful() && isset($response->json()['articles'])) {
