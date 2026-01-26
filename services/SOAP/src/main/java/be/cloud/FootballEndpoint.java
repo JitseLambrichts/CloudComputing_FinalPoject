@@ -55,7 +55,7 @@ public class FootballEndpoint {
                 response.setLossesHome(result.getInt("losses_home"));
                 response.setLossesAway(result.getInt("losses_away"));
                 response.setDraws(result.getInt("draws"));
-                response.setPointsPerGame(result.getInt("points_per_game"));
+                response.setPointsPerGame(result.getFloat("points_per_game"));
                 response.setLeaguePosition(result.getInt("league_position"));
                 response.setGoalsScored(result.getInt("goals_scored"));
                 response.setGoalsConceded(result.getInt("goals_conceded"));

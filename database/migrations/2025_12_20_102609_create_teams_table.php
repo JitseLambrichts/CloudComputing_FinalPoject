@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('losses_home');
             $table->integer('losses_away');
             $table->integer('draws');
-            $table->integer('points_per_game');
+            $table->decimal('points_per_game', 8, 2);
             $table->integer('league_position');
             $table->integer('goals_scored');
             $table->integer('goals_conceded');

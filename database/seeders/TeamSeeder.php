@@ -31,7 +31,7 @@ class TeamSeeder extends Seeder
                 'losses_home'       => (int)$row['losses_home'],
                 'losses_away'       => (int)$row['losses_away'],
                 'draws'             => (int)$row['draws'],
-                'points_per_game'   => (int)$row['points_per_game'],
+                'points_per_game'   => (float)$row['points_per_game'],
                 'league_position'   => (int)$row['league_position'],
                 'goals_scored'      => (int)$row['goals_scored'],
                 'goals_conceded'    => (int)$row['goals_conceded'],

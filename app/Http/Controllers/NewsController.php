@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 // Voor de cache -> bronvermelding Copilot
+// Om cache te clearen: DB_HOST=127.0.0.1 php artisan cache:clear
 
 class NewsController extends Controller
 {

@@ -27,7 +27,7 @@
                 <xs:element name="losses_home" type="xs:int"/>
                 <xs:element name="losses_away" type="xs:int"/>
                 <xs:element name="draws" type="xs:int"/>
-                <xs:element name="points_per_game" type="xs:int"/>
+                <xs:element name="points_per_game" type="xs:float"/>
                 <xs:element name="league_position" type="xs:int"/>
                 <xs:element name="goals_scored" type="xs:int"/>
                 <xs:element name="goals_conceded" type="xs:int"/>

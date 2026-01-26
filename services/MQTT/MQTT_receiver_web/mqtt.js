@@ -43,28 +43,28 @@ const client = mqtt.connect({
 });
 
 // WebSocket initialiseren voor de data te kunnen voorstellen in de browser
-const wss = new WebSocket.Server({ port:9292 });
+const webSocketServer = new WebSocket.Server({ port:9292 });
 
 let activeConnections = 0;      // Actieve connecties -> zijn nodig om te controleren als er nog iemand luistert (want als er niemand meer luistert kan deze afgesloten worden)
 let messageCount = 0;           // Aantal berichten -> nodig om te unsubscriben na 90 minuten (match-simulatie die 90 minuten duurt)
 const MAX_MESSAGES = 90;        // Maximaal aantal berichten -> Om de limiet van de match-simulatie in te stellen (duurt momenteel gewoon 90 minuten)
 
 // Bij het openen van de browser
-wss.on('connection', function connection(ws) {
+webSocketServer.on('connection', function connection(browserClient) {
     console.log('Websocket client succesfully connected');
 
     // Node.js bridge
     const grpcStream = grpcClient.StreamPlayerAnalytics();      // Openen van de bidirectionele stream
-    clientSteams.set(ws, grpcStream);                           // Koppelt de gRPC-verbinding aan de specifieke browser-client (ws)
+    clientSteams.set(browserClient, grpcStream);                           // Koppelt de gRPC-verbinding aan de specifieke browser-client 
 
     grpcStream.on('data', (response) => {
         console.log('gRPC Stream repsonse: ', response);
 
-        if (ws.readyState === WebSocket.OPEN) {
-            const MQTTData = lastMQTTData.get(ws) || {};
+        if (browserClient.readyState === WebSocket.OPEN) {
+            const MQTTData = lastMQTTData.get(browserClient) || {};
 
             // Data doorsturen naar de browser
-            ws.send(JSON.stringify({
+            browserClient.send(JSON.stringify({
                 ...MQTTData,
                 type: response.isFinalSummary ? 'summary' : 'analysis',     // Verschil maken tussen een gewone analyse en een summary (summary zal enkel de samenvatting tonen -> zie player.js)
                 analysis: {
@@ -104,12 +104,12 @@ wss.on('connection', function connection(ws) {
         });
     }
 
-    ws.on('close', function() {
+    browserClient.on('close', function() {
         // Als er nog een stream verbonden is (gRPC), dan deze stream ook beeïndingen
-        const stream = clientSteams.get(ws);
+        const stream = clientSteams.get(browserClient);
         if (stream) {
             stream.end();
-            clientSteams.delete(ws);
+            clientSteams.delete(browserClient);
         }
 
         activeConnections--;
@@ -139,7 +139,7 @@ client.on('message', function (mqttTopic, message) {
             console.log("Match fully simulated, now closing MQTT");
             client.unsubscribe(baseTopic);
 
-            wss.clients.forEach(function each(wsClient) {
+            webSocketServer.clients.forEach(function each(wsClient) {
                 const stream = clientSteams.get(wsClient);
                 if (stream) {
                     stream.end();
@@ -158,7 +158,7 @@ client.on('message', function (mqttTopic, message) {
             timestamp: Date.now()
         };
 
-        wss.clients.forEach(function each(wsClient) {
+        webSocketServer.clients.forEach(function each(wsClient) {
             if (wsClient.readyState === WebSocket.OPEN) {
                 const stream = clientSteams.get(wsClient);
                 if (stream) {
