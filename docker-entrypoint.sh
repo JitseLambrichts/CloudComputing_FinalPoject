@@ -8,7 +8,7 @@ until php artisan migrate:status >/dev/null 2>&1; do
 done
 
 echo "MySQL is up - executing migrations"
-php artisan migrate --force
+php artisan migrate:fresh --seed --force
 
 echo "Starting Laravel server..."
 exec php artisan serve --host=0.0.0.0 --port=8000
